@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(find ~/.claude -path *agent-memory* -name *.md)",
+      "Bash(find ~/.claude/skills -name *.md)"
     ]
   }
 }
