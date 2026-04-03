@@ -4,7 +4,9 @@
       "Bash(python3:*)",
       "Bash(find ~/.claude -path *agent-memory* -name *.md)",
       "Bash(find ~/.claude/skills -name *.md)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
