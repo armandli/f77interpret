@@ -14,8 +14,12 @@ namespace f77i {
 struct Lexer {
   explicit Lexer(const Config& conf) : mConf(conf) {}
   s::vector<Token> tokenize(s::string_view source_code, int start_lno = 0);
+  int count_lines(s::string_view source_code) const;
+  int count_logical_lines(s::string_view source_code) const;
 
 protected:
+  bool isCommentLine(s::string_view line) const;
+  bool isContinuationLine(s::string_view line) const;
   void tokenizeCode(
       s::string_view code,
       int lno,

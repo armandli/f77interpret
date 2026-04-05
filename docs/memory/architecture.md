@@ -44,6 +44,10 @@ classDiagram
             -Config mConf
             +Lexer(conf Config)
             +tokenize(source_code string, start_lno int) vector~Token~
+            +count_lines(source_code string) int
+            +count_logical_lines(source_code string) int
+            #isCommentLine(line string) bool
+            #isContinuationLine(line string) bool
         }
     }
     class main {

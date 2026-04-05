@@ -455,6 +455,70 @@ void Lexer::tokenizeCode(
   }
 }
 
+bool Lexer::isCommentLine(s::string_view line) const {
+  if (line.empty()) return false;
+  char c = line[0];
+  return c == 'C' or c == 'c' or c == '*';
+}
+
+bool Lexer::isContinuationLine(s::string_view line) const {
+  int cont_col = mConf.SCSrcCol - 1;
+  Codepoint cp = mConf.codepoint;
+  if (static_cast<int>(line.size()) <= cont_col) return false;
+  s::size_t byte_cont = byteOffsetOfCol(line, cont_col, cp);
+  if (byte_cont >= line.size()) return false;
+  char ch = line[byte_cont];
+  return ch != ' ' and ch != '0';
+}
+
+int Lexer::count_lines(s::string_view source_code) const {
+  if (source_code.empty()) return 0;
+  int count = 0;
+  for (char ch : source_code) {
+    if (ch == '\n') count++;
+  }
+  if (source_code.back() != '\n') count++;
+  return count;
+}
+
+int Lexer::count_logical_lines(s::string_view source_code) const {
+  s::vector<s::string_view> lines;
+  {
+    s::string_view sv(source_code);
+    s::size_t pos = 0;
+    while (pos <= sv.size()) {
+      s::size_t nl = sv.find('\n', pos);
+      if (nl == s::string_view::npos) {
+        lines.push_back(sv.substr(pos));
+        break;
+      }
+      lines.push_back(sv.substr(pos, nl - pos));
+      pos = nl + 1;
+    }
+  }
+
+  int n = static_cast<int>(lines.size());
+  int logical_count = 0;
+  for (int idx = 0; idx < n; idx++) {
+    s::string_view line = lines[idx];
+    if (line.empty()) continue;
+    if (isCommentLine(line)) continue;
+
+    bool next_is_cont = false;
+    for (int j = idx + 1; j < n; j++) {
+      s::string_view next_line = lines[j];
+      if (next_line.empty()) continue;
+      if (isCommentLine(next_line)) continue;
+      next_is_cont = isContinuationLine(next_line);
+      break;
+    }
+
+    if (not next_is_cont) logical_count++;
+  }
+
+  return logical_count;
+}
+
 s::vector<Token> Lexer::tokenize(s::string_view source_code, int start_lno) {
   s::vector<Token> tokens;
   Codepoint cp = mConf.codepoint;
@@ -482,23 +546,6 @@ s::vector<Token> Lexer::tokenize(s::string_view source_code, int start_lno) {
   int n = static_cast<int>(lines.size());
   int llno = start_lno;
 
-  // Helper lambda: check if line at index idx is a continuation line.
-  // Skips comment and empty lines when looking for continuation marker.
-  auto isContinuation = [&](s::string_view line) -> bool {
-    if (static_cast<int>(line.size()) <= cont_col) return false;
-    // Byte offset of continuation column
-    s::size_t byte_cont = byteOffsetOfCol(line, cont_col, cp);
-    if (byte_cont >= line.size()) return false;
-    char ch = line[byte_cont];
-    return ch != ' ' and ch != '0';
-  };
-
-  auto isComment = [](s::string_view line) -> bool {
-    if (line.empty()) return false;
-    char c = line[0];
-    return c == 'C' or c == 'c' or c == '*';
-  };
-
   for (int idx = 0; idx < n; idx++) {
     s::string_view line = lines[idx];
     int lno = start_lno + idx;
@@ -506,7 +553,7 @@ s::vector<Token> Lexer::tokenize(s::string_view source_code, int start_lno) {
     if (line.empty()) continue;
 
     // Comment line: skip entirely
-    if (isComment(line)) continue;
+    if (isCommentLine(line)) continue;
 
     // OOB check: count codepoints in this line; error if > max_col+1
     {
@@ -529,7 +576,7 @@ s::vector<Token> Lexer::tokenize(s::string_view source_code, int start_lno) {
       }
     }
 
-    bool cont = isContinuation(line);
+    bool cont = isContinuationLine(line);
 
     // Label field: only for non-continuation lines
     if (not cont) {
@@ -594,8 +641,8 @@ s::vector<Token> Lexer::tokenize(s::string_view source_code, int start_lno) {
     for (int j = idx + 1; j < n; j++) {
       s::string_view next_line = lines[j];
       if (next_line.empty()) continue;
-      if (isComment(next_line)) continue;
-      next_is_cont = isContinuation(next_line);
+      if (isCommentLine(next_line)) continue;
+      next_is_cont = isContinuationLine(next_line);
       break;
     }
 
