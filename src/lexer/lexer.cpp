@@ -208,7 +208,7 @@ s::size_t Lexer::tryParseComplexLiteral(s::string_view code, s::size_t i) const 
 }
 
 TT Lexer::parseDotToken(
-    s::string_view code, s::size_t i, s::size_t& out_end) const
+    s::size_t& out_end, s::string_view code, s::size_t i) const
 {
   s::size_t n = code.size();
   s::size_t j = i + 1; // skip leading '.'
@@ -237,10 +237,10 @@ TT Lexer::parseDotToken(
 }
 
 void Lexer::tokenizeCode(
+    s::vector<Token>& tokens,
     s::string_view code,
     int lno,
-    int llno,
-    s::vector<Token>& tokens) const
+    int llno) const
 {
   s::size_t n = code.size();
   s::size_t i = 0;
@@ -353,7 +353,7 @@ void Lexer::tokenizeCode(
         i = j;
       } else {
         s::size_t out_end = i + 1;
-        TT tt = parseDotToken(code, i, out_end);
+        TT tt = parseDotToken(out_end, code, i);
         tokens.push_back(Token{tt, lno, llno, code.substr(i, out_end - i)});
         i = out_end;
       }
@@ -639,7 +639,7 @@ s::vector<Token> Lexer::tokenize(s::string_view source_code, int start_lno) {
         }
       }
 
-      tokenizeCode(code, lno, llno, tokens);
+      tokenizeCode(tokens, code, lno, llno);
     }
 
     // Peek ahead: is the next effective (non-comment, non-empty) line a continuation?

@@ -22,16 +22,16 @@ protected:
   bool isCommentLine(s::string_view line) const;
   bool isContinuationLine(s::string_view line) const;
   void tokenizeCode(
+      s::vector<Token>& tokens,
       s::string_view code,
       int lno,
-      int llno,
-      s::vector<Token>& tokens) const;
+      int llno) const;
   s::size_t tryParseComplexLiteral(
       s::string_view code, s::size_t i) const;
   s::size_t tryParseSignedNumber(
       s::string_view code, s::size_t i) const;
   TT parseDotToken(
-      s::string_view code, s::size_t i, s::size_t& out_end) const;
+      s::size_t& out_end, s::string_view code, s::size_t i) const;
 
 private:
   Config mConf;
