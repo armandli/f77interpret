@@ -16,6 +16,7 @@ struct Lexer {
   s::vector<Token> tokenize(s::string_view source_code, int start_lno = 0);
   int count_lines(s::string_view source_code) const;
   int count_logical_lines(s::string_view source_code) const;
+  void append_eof(s::vector<Token>& tokens) const;
 
 protected:
   bool isCommentLine(s::string_view line) const;

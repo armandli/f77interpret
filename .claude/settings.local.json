@@ -29,7 +29,8 @@
       "Bash(cmake --build /Users/armandli/f77interpret/build)",
       "Bash(build/bin/f77interpret_test 2>&1)",
       "Bash(build/bin/f77interpret_test)",
-      "Read(//Users/armandli/.claude/skills/**)"
+      "Read(//Users/armandli/.claude/skills/**)",
+      "Bash(cmake --build .)"
     ]
   },
   "hooks": {

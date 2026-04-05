@@ -471,6 +471,12 @@ bool Lexer::isContinuationLine(s::string_view line) const {
   return ch != ' ' and ch != '0';
 }
 
+void Lexer::append_eof(s::vector<Token>& tokens) const {
+  int lno = tokens.empty() ? 0 : tokens.back().lno;
+  int llno = tokens.empty() ? 0 : tokens.back().llno;
+  tokens.push_back(Token(TT::END_OF_FILE, lno, llno, s::string_view{}));
+}
+
 int Lexer::count_lines(s::string_view source_code) const {
   if (source_code.empty()) return 0;
   int count = 0;
