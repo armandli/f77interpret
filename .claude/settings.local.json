@@ -1,4 +1,21 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(find ~/.claude -path *agent-memory* -name *.md)",
+      "Bash(find ~/.claude/skills -name *.md)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(chmod:*)",
+      "Bash(cmake -B build -S .)",
+      "Bash(cmake --build build)",
+      "Bash(./build/bin/f77interpret)",
+      "Bash(brew list:*)",
+      "Bash(brew info:*)",
+      "Read(//opt/homebrew/lib/cmake/**)"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {
@@ -10,17 +27,6 @@
           }
         ]
       }
-    ]
-  },
-  "permissions": {
-    "allow": [
-      "Bash(python3:*)",
-      "Bash(find ~/.claude -path *agent-memory* -name *.md)",
-      "Bash(find ~/.claude/skills -name *.md)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(git push:*)",
-      "Bash(chmod:*)"
     ]
   }
 }
