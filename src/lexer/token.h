@@ -109,13 +109,13 @@ enum class TT : int {
 };
 
 struct Token {
-  Token() : type(TT::UNKNOWN), lno(0), llno(0), sv() {}
-  Token(TT type, int lno, int llno, s::string_view sv)
-      : type(type), lno(lno), llno(llno), sv(sv) {}
+  Token() : type(TT::UNKNOWN), lno(0), llno(0), value() {}
+  Token(TT type, int lno, int llno, s::string_view value)
+      : type(type), lno(lno), llno(llno), value(value) {}
   TT             type;
   int            lno;   // physical line number
   int            llno;  // effective (logical) line number
-  s::string_view sv;    // view into original source string
+  s::string_view value; // token value
 };
 
 } // namespace f77i
