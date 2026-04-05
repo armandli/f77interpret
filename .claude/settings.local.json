@@ -14,7 +14,14 @@
       "Bash(brew list:*)",
       "Bash(brew info:*)",
       "Read(//opt/homebrew/lib/cmake/**)",
-      "Bash(find /Users/armandli/f77interpret/src -type f \\\\\\( -name \"*.cpp\" -o -name \"*.h\" -o -name \"*.hpp\" \\\\\\) -exec wc -l {} +)"
+      "Bash(find /Users/armandli/f77interpret/src -type f \\\\\\( -name \"*.cpp\" -o -name \"*.h\" -o -name \"*.hpp\" \\\\\\) -exec wc -l {} +)",
+      "Bash(git mv:*)",
+      "Bash(cmake -B build -DCMAKE_BUILD_TYPE=Release)",
+      "Bash(./build/bin/f77interpret --help)",
+      "Bash(./build/bin/f77interpret /nonexistent.f)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(make)",
+      "Bash(make test:*)"
     ]
   },
   "hooks": {
