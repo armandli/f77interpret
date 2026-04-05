@@ -13,6 +13,8 @@ struct Config {
   s::string source_file;
   s::vector<s::string> include_paths;
   Codepoint codepoint = Codepoint::ASCII;
+  int SCSrcCol = 6;   // 0-indexed start of code field (column 7 in 1-indexed)
+  int SCMaxCol = 71;  // 0-indexed last valid code column inclusive (column 72 in 1-indexed)
 };
 
 } // namespace f77i

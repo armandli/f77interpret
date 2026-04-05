@@ -10,6 +10,9 @@ classDiagram
         class Config {
             +string source_file
             +vector~string~ include_paths
+            +Codepoint codepoint
+            +int SCSrcCol
+            +int SCMaxCol
         }
         class TT {
             <<enumeration>>
@@ -29,13 +32,18 @@ classDiagram
             TRUE FALSE
             LPAREN RPAREN COMMA COLON SEMICOLON SQUOTE DQUOTE
             INT_LITERAL DBL_LITERAL RL_LITERAL CMPX_LITERAL CHR_LITERAL
-            IDENTIFIER NEWLINE END_OF_FILE UNKNOWN
+            LABEL IDENTIFIER NEWLINE END_OF_FILE UNKNOWN
         }
         class Token {
             +TT type
             +int lno
             +int llno
-            +string_view sv
+            +string_view value
+        }
+        class Lexer {
+            -Config mConf
+            +Lexer(conf Config)
+            +tokenize(source_code string, start_lno int) vector~Token~
         }
     }
     class main {
@@ -44,4 +52,6 @@ classDiagram
     }
     main --> Config : creates
     Token --> TT : uses
+    Lexer --> Config : owns
+    Lexer --> Token : produces
 ```

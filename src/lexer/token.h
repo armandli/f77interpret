@@ -102,6 +102,7 @@ enum class TT : int {
   CHR_LITERAL,
 
   // structural
+  LABEL,
   IDENTIFIER,
   NEWLINE,
   END_OF_FILE,

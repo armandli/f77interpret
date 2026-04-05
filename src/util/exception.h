@@ -31,6 +31,12 @@ struct file_not_found : s::exception {
   s::string msg;
 };
 
+struct oob_error : s::exception {
+  explicit oob_error(s::string m) : msg(s::move(m)) {}
+  const char* what() const noexcept override { return msg.c_str(); }
+  s::string msg;
+};
+
 } // namespace f77i
 
 #endif // F77INTERPRET_EXCEPTION_H
