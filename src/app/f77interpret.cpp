@@ -13,7 +13,10 @@ int main(int argc, char* argv[]) {
     ("include-path,I",
       po::value<s::vector<s::string>>()->composing(),
       "include search path (may be specified multiple times)")
-    ("file", po::value<s::string>(), "FORTRAN 77 source file to interpret");
+    ("file", po::value<s::string>(), "FORTRAN 77 source file to interpret")
+    ("codepoint",
+      po::value<s::string>()->default_value("ASCII"),
+      "character encoding: ASCII (default), UTF8, CODEPAGE");
 
   po::positional_options_description pos;
   pos.add("file", 1);
@@ -38,6 +41,19 @@ int main(int argc, char* argv[]) {
   }
   if (vm.count("file")) {
     config.source_file = vm["file"].as<s::string>();
+  }
+  {
+    s::string cp = vm["codepoint"].as<s::string>();
+    if (cp == "UTF8") {
+      config.codepoint = f77i::Codepoint::UTF8;
+    } else if (cp == "CODEPAGE") {
+      config.codepoint = f77i::Codepoint::CODEPAGE;
+    } else if (cp == "ASCII") {
+      config.codepoint = f77i::Codepoint::ASCII;
+    } else {
+      s::cerr << "error: unknown codepoint '" << cp << "' (valid: ASCII, UTF8, CODEPAGE)\n";
+      return 1;
+    }
   }
 
   if (not config.source_file.empty()) {
