@@ -114,8 +114,8 @@ bool isUnknownStart(char c) {
       c == '+' or c == '-' or c == '*' or c == '/')
     return false;
   if (static_cast<unsigned char>(c) >= 0x80) return true; // non-ASCII: unknown
-  if (std::isdigit(static_cast<unsigned char>(c))) return false;
-  if (std::isalpha(static_cast<unsigned char>(c))) return false;
+  if (s::isdigit(static_cast<unsigned char>(c))) return false;
+  if (s::isalpha(static_cast<unsigned char>(c))) return false;
   if (c == '_') return false;
   return true;
 }
@@ -136,24 +136,24 @@ s::size_t Lexer::tryParseSignedNumber(s::string_view code, s::size_t i) const {
 
   if (code[j] == '.'
       and j + 1 < n
-      and std::isdigit(static_cast<unsigned char>(code[j + 1]))) {
+      and s::isdigit(static_cast<unsigned char>(code[j + 1]))) {
     // starts with decimal point
     j++;
-    while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) {
+    while (j < n and s::isdigit(static_cast<unsigned char>(code[j]))) {
       j++;
       has_digits = true;
     }
-  } else if (std::isdigit(static_cast<unsigned char>(code[j]))) {
-    while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) {
+  } else if (s::isdigit(static_cast<unsigned char>(code[j]))) {
+    while (j < n and s::isdigit(static_cast<unsigned char>(code[j]))) {
       j++;
       has_digits = true;
     }
     // optional decimal point
     if (j < n and code[j] == '.') {
       char next = (j + 1 < n) ? code[j + 1] : '\0';
-      if (not std::isalpha(static_cast<unsigned char>(next)) and next != '_') {
+      if (not s::isalpha(static_cast<unsigned char>(next)) and next != '_') {
         j++; // consume '.'
-        while (j < n and std::isdigit(static_cast<unsigned char>(code[j])))
+        while (j < n and s::isdigit(static_cast<unsigned char>(code[j])))
           j++;
       }
     }
@@ -165,14 +165,14 @@ s::size_t Lexer::tryParseSignedNumber(s::string_view code, s::size_t i) const {
     return i;
 
   // optional exponent
-  if (j < n and (std::tolower(static_cast<unsigned char>(code[j])) == 'e' or
-                 std::tolower(static_cast<unsigned char>(code[j])) == 'd')) {
+  if (j < n and (s::tolower(static_cast<unsigned char>(code[j])) == 'e' or
+                 s::tolower(static_cast<unsigned char>(code[j])) == 'd')) {
     s::size_t k = j + 1;
     if (k < n and (code[k] == '+' or code[k] == '-'))
       k++;
-    if (k < n and std::isdigit(static_cast<unsigned char>(code[k]))) {
+    if (k < n and s::isdigit(static_cast<unsigned char>(code[k]))) {
       j = k;
-      while (j < n and std::isdigit(static_cast<unsigned char>(code[j])))
+      while (j < n and s::isdigit(static_cast<unsigned char>(code[j])))
         j++;
     }
   }
@@ -214,7 +214,7 @@ TT Lexer::parseDotToken(
   s::size_t j = i + 1; // skip leading '.'
 
   s::size_t name_start = j;
-  while (j < n and std::isalpha(static_cast<unsigned char>(code[j])))
+  while (j < n and s::isalpha(static_cast<unsigned char>(code[j])))
     j++;
 
   if (j >= n or code[j] != '.') {
@@ -224,7 +224,7 @@ TT Lexer::parseDotToken(
 
   s::string name(code.substr(name_start, j - name_start));
   s::transform(name.begin(), name.end(), name.begin(),
-               [](unsigned char c) { return std::toupper(c); });
+               [](unsigned char c) { return s::toupper(c); });
 
   auto it = kDotOps.find(name);
   if (it != kDotOps.end()) {
@@ -332,20 +332,20 @@ void Lexer::tokenizeCode(
 
     // dot: dotted operator or real literal starting with '.'
     if (c == '.') {
-      if (i + 1 < n and std::isdigit(static_cast<unsigned char>(code[i + 1]))) {
+      if (i + 1 < n and s::isdigit(static_cast<unsigned char>(code[i + 1]))) {
         // real/double literal starting with '.'
         s::size_t j = i + 1;
-        while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) j++;
+        while (j < n and s::isdigit(static_cast<unsigned char>(code[j]))) j++;
         TT tt = TT::RL_LITERAL;
         if (j < n) {
-          char ec = static_cast<char>(std::tolower(static_cast<unsigned char>(code[j])));
+          char ec = static_cast<char>(s::tolower(static_cast<unsigned char>(code[j])));
           if (ec == 'e' or ec == 'd') {
             s::size_t k = j + 1;
             if (k < n and (code[k] == '+' or code[k] == '-')) k++;
-            if (k < n and std::isdigit(static_cast<unsigned char>(code[k]))) {
+            if (k < n and s::isdigit(static_cast<unsigned char>(code[k]))) {
               tt = (ec == 'd') ? TT::DBL_LITERAL : TT::RL_LITERAL;
               j = k;
-              while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) j++;
+              while (j < n and s::isdigit(static_cast<unsigned char>(code[j]))) j++;
             }
           }
         }
@@ -383,20 +383,20 @@ void Lexer::tokenizeCode(
     }
 
     // number literal starting with digit
-    if (std::isdigit(c)) {
+    if (s::isdigit(c)) {
       s::size_t j = i;
-      while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) j++;
+      while (j < n and s::isdigit(static_cast<unsigned char>(code[j]))) j++;
 
       TT tt = TT::INT_LITERAL;
 
       // check for decimal point
       if (j < n and code[j] == '.') {
         char after_dot = (j + 1 < n) ? code[j + 1] : '\0';
-        if (not std::isalpha(static_cast<unsigned char>(after_dot))
+        if (not s::isalpha(static_cast<unsigned char>(after_dot))
             and after_dot != '_') {
           // consume decimal point
           j++;
-          while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) j++;
+          while (j < n and s::isdigit(static_cast<unsigned char>(code[j]))) j++;
           tt = TT::RL_LITERAL;
         }
         // else: '.' starts a dotted operator, don't consume it
@@ -404,14 +404,14 @@ void Lexer::tokenizeCode(
 
       // check for exponent
       if (j < n) {
-        char ec = static_cast<char>(std::tolower(static_cast<unsigned char>(code[j])));
+        char ec = static_cast<char>(s::tolower(static_cast<unsigned char>(code[j])));
         if (ec == 'e' or ec == 'd') {
           s::size_t k = j + 1;
           if (k < n and (code[k] == '+' or code[k] == '-')) k++;
-          if (k < n and std::isdigit(static_cast<unsigned char>(code[k]))) {
+          if (k < n and s::isdigit(static_cast<unsigned char>(code[k]))) {
             tt = (ec == 'd') ? TT::DBL_LITERAL : TT::RL_LITERAL;
             j = k;
-            while (j < n and std::isdigit(static_cast<unsigned char>(code[j])))
+            while (j < n and s::isdigit(static_cast<unsigned char>(code[j])))
               j++;
           }
           // else: no digits after exponent letter, backtrack (don't consume E/D)
@@ -424,11 +424,11 @@ void Lexer::tokenizeCode(
     }
 
     // identifier or keyword (ASCII only: alpha or '_')
-    if (std::isalpha(c) or c == '_') {
+    if (s::isalpha(c) or c == '_') {
       s::size_t j = i;
       while (j < n) {
         unsigned char ch = static_cast<unsigned char>(code[j]);
-        if (std::isalnum(ch) or ch == '_' or ch == '$')
+        if (s::isalnum(ch) or ch == '_' or ch == '$')
           j++;
         else
           break;
@@ -436,7 +436,7 @@ void Lexer::tokenizeCode(
       s::string_view raw = code.substr(i, j - i);
       s::string lower(raw);
       s::transform(lower.begin(), lower.end(), lower.begin(),
-                   [](unsigned char ch) { return std::tolower(ch); });
+                   [](unsigned char ch) { return s::tolower(ch); });
       auto it = kKeywords.find(lower);
       TT tt = (it != kKeywords.end()) ? it->second : TT::IDENTIFIER;
       tokens.push_back(Token{tt, lno, llno, raw});
@@ -652,8 +652,6 @@ s::vector<Token> Lexer::tokenize(s::string_view source_code, int start_lno) {
     }
   }
 
-  tokens.push_back(Token{
-      TT::END_OF_FILE, start_lno + n, llno, s::string_view{}});
   return tokens;
 }
 
