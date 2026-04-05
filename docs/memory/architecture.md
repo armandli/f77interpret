@@ -6,13 +6,15 @@ Changes here drive source code updates via the agent-memory-v2 skill (Path C).
 
 ```mermaid
 classDiagram
-    %% Define your project's classes, interfaces, and relationships here.
-    %% Example:
-    %% class ServiceA {
-    %%     +methodA() void
-    %% }
-    %% class ServiceB {
-    %%     +methodB() string
-    %% }
-    %% ServiceA --> ServiceB : uses
+    namespace f77i {
+        class Config {
+            +string source_file
+            +vector~string~ include_paths
+        }
+    }
+    class main {
+        <<entrypoint>>
+        +main(argc int, argv string[]) int
+    }
+    main --> Config : creates
 ```
