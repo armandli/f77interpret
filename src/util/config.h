@@ -7,9 +7,12 @@
 
 namespace f77i {
 
+enum class Codepoint { ASCII, UTF8, CODEPAGE };
+
 struct Config {
   s::string source_file;
   s::vector<s::string> include_paths;
+  Codepoint codepoint = Codepoint::ASCII;
 };
 
 } // namespace f77i

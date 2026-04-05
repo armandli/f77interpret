@@ -21,7 +21,9 @@
       "Bash(./build/bin/f77interpret /nonexistent.f)",
       "Bash(echo \"exit: $?\")",
       "Bash(make)",
-      "Bash(make test:*)"
+      "Bash(make test:*)",
+      "Bash(xargs ls:*)",
+      "Bash(xargs cat:*)"
     ]
   },
   "hooks": {
