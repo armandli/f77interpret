@@ -25,7 +25,8 @@
       "Bash(xargs ls:*)",
       "Bash(xargs cat:*)",
       "Bash(find /Users/armandli/.claude/plugins -type f -name *.md -o -name *.txt)",
-      "Bash(find /Users/armandli/.claude/plugins/marketplaces -type f -name *.md)"
+      "Bash(find /Users/armandli/.claude/plugins/marketplaces -type f -name *.md)",
+      "Bash(cmake --build /Users/armandli/f77interpret/build)"
     ]
   },
   "hooks": {

@@ -51,7 +51,8 @@ int main(int argc, char* argv[]) {
     } else if (cp == "ASCII") {
       config.codepoint = f77i::Codepoint::ASCII;
     } else {
-      s::cerr << "error: unknown codepoint '" << cp << "' (valid: ASCII, UTF8, CODEPAGE)\n";
+      s::cerr << "error: unknown codepoint '" << cp
+        << "' (valid: ASCII, UTF8, CODEPAGE)\n";
       return 1;
     }
   }
