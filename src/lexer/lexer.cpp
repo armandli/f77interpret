@@ -1,8 +1,10 @@
 #include <lexer.h>
-#include <exception.h>
-#include <cctype>
+
 #include <algorithm>
+#include <cctype>
 #include <unordered_map>
+
+#include <exception.h>
 
 namespace f77i {
 
@@ -87,7 +89,7 @@ s::size_t codepointSize(unsigned char c, Codepoint cp) {
 s::size_t byteOffsetOfCol(s::string_view sv, int col, Codepoint cp) {
   int c = 0;
   s::size_t b = 0;
-  while (b < sv.size() && c < col) {
+  while (b < sv.size() and c < col) {
     b += codepointSize(static_cast<unsigned char>(sv[b]), cp);
     c++;
   }
@@ -106,10 +108,10 @@ int codepointCount(s::string_view sv, Codepoint cp) {
 }
 
 bool isUnknownStart(char c) {
-  if (c == ' ' || c == '\t' || c == '!' || c == '.' ||
-      c == '\'' || c == '"' || c == '(' || c == ')' ||
-      c == ',' || c == ':' || c == ';' || c == '=' ||
-      c == '+' || c == '-' || c == '*' || c == '/')
+  if (c == ' ' or c == '\t' or c == '!' or
+      c == '\'' or c == '"' or c == '(' or c == ')' or
+      c == ',' or c == ':' or c == ';' or c == '=' or
+      c == '+' or c == '-' or c == '*' or c == '/')
     return false;
   if (static_cast<unsigned char>(c) >= 0x80) return true; // non-ASCII: unknown
   if (std::isdigit(static_cast<unsigned char>(c))) return false;
@@ -120,13 +122,11 @@ bool isUnknownStart(char c) {
 
 } // anonymous namespace
 
-Lexer::Lexer(const Config& conf) : mConf(conf) {}
-
 s::size_t Lexer::tryParseSignedNumber(s::string_view code, s::size_t i) const {
   s::size_t j = i;
   s::size_t n = code.size();
 
-  if (j < n && (code[j] == '+' || code[j] == '-'))
+  if (j < n and (code[j] == '+' or code[j] == '-'))
     j++;
 
   if (j >= n)
@@ -134,24 +134,26 @@ s::size_t Lexer::tryParseSignedNumber(s::string_view code, s::size_t i) const {
 
   bool has_digits = false;
 
-  if (code[j] == '.' && j + 1 < n && std::isdigit(static_cast<unsigned char>(code[j + 1]))) {
+  if (code[j] == '.'
+      and j + 1 < n
+      and std::isdigit(static_cast<unsigned char>(code[j + 1]))) {
     // starts with decimal point
     j++;
-    while (j < n && std::isdigit(static_cast<unsigned char>(code[j]))) {
+    while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) {
       j++;
       has_digits = true;
     }
   } else if (std::isdigit(static_cast<unsigned char>(code[j]))) {
-    while (j < n && std::isdigit(static_cast<unsigned char>(code[j]))) {
+    while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) {
       j++;
       has_digits = true;
     }
     // optional decimal point
-    if (j < n && code[j] == '.') {
+    if (j < n and code[j] == '.') {
       char next = (j + 1 < n) ? code[j + 1] : '\0';
-      if (!std::isalpha(static_cast<unsigned char>(next)) && next != '_') {
+      if (not std::isalpha(static_cast<unsigned char>(next)) and next != '_') {
         j++; // consume '.'
-        while (j < n && std::isdigit(static_cast<unsigned char>(code[j])))
+        while (j < n and std::isdigit(static_cast<unsigned char>(code[j])))
           j++;
       }
     }
@@ -159,18 +161,18 @@ s::size_t Lexer::tryParseSignedNumber(s::string_view code, s::size_t i) const {
     return i; // no number
   }
 
-  if (!has_digits)
+  if (not has_digits)
     return i;
 
   // optional exponent
-  if (j < n && (std::tolower(static_cast<unsigned char>(code[j])) == 'e' ||
-                std::tolower(static_cast<unsigned char>(code[j])) == 'd')) {
+  if (j < n and (std::tolower(static_cast<unsigned char>(code[j])) == 'e' or
+                 std::tolower(static_cast<unsigned char>(code[j])) == 'd')) {
     s::size_t k = j + 1;
-    if (k < n && (code[k] == '+' || code[k] == '-'))
+    if (k < n and (code[k] == '+' or code[k] == '-'))
       k++;
-    if (k < n && std::isdigit(static_cast<unsigned char>(code[k]))) {
+    if (k < n and std::isdigit(static_cast<unsigned char>(code[k]))) {
       j = k;
-      while (j < n && std::isdigit(static_cast<unsigned char>(code[j])))
+      while (j < n and std::isdigit(static_cast<unsigned char>(code[j])))
         j++;
     }
   }
@@ -182,38 +184,40 @@ s::size_t Lexer::tryParseComplexLiteral(s::string_view code, s::size_t i) const 
   s::size_t n = code.size();
   s::size_t j = i + 1; // skip '('
 
-  while (j < n && code[j] == ' ') j++;
+  while (j < n and code[j] == ' ') j++;
 
   s::size_t end1 = tryParseSignedNumber(code, j);
   if (end1 == j) return i;
   j = end1;
 
-  while (j < n && code[j] == ' ') j++;
-  if (j >= n || code[j] != ',') return i;
+  while (j < n and code[j] == ' ') j++;
+  if (j >= n or code[j] != ',') return i;
   j++;
 
-  while (j < n && code[j] == ' ') j++;
+  while (j < n and code[j] == ' ') j++;
 
   s::size_t end2 = tryParseSignedNumber(code, j);
   if (end2 == j) return i;
   j = end2;
 
-  while (j < n && code[j] == ' ') j++;
-  if (j >= n || code[j] != ')') return i;
+  while (j < n and code[j] == ' ') j++;
+  if (j >= n or code[j] != ')') return i;
   j++;
 
   return j;
 }
 
-TT Lexer::parseDotToken(s::string_view code, s::size_t i, s::size_t& out_end) const {
+TT Lexer::parseDotToken(
+    s::string_view code, s::size_t i, s::size_t& out_end) const
+{
   s::size_t n = code.size();
   s::size_t j = i + 1; // skip leading '.'
 
   s::size_t name_start = j;
-  while (j < n && std::isalpha(static_cast<unsigned char>(code[j])))
+  while (j < n and std::isalpha(static_cast<unsigned char>(code[j])))
     j++;
 
-  if (j >= n || code[j] != '.') {
+  if (j >= n or code[j] != '.') {
     out_end = i + 1;
     return TT::UNKNOWN;
   }
@@ -232,8 +236,12 @@ TT Lexer::parseDotToken(s::string_view code, s::size_t i, s::size_t& out_end) co
   return TT::UNKNOWN;
 }
 
-void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
-                          s::vector<Token>& tokens) const {
+void Lexer::tokenizeCode(
+    s::string_view code,
+    int lno,
+    int llno,
+    s::vector<Token>& tokens) const
+{
   s::size_t n = code.size();
   s::size_t i = 0;
   Codepoint cp = mConf.codepoint;
@@ -242,7 +250,7 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
     unsigned char c = static_cast<unsigned char>(code[i]);
 
     // skip whitespace
-    if (c == ' ' || c == '\t') {
+    if (c == ' ' or c == '\t') {
       i++;
       continue;
     }
@@ -254,7 +262,8 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
     if (c == '(') {
       s::size_t end = tryParseComplexLiteral(code, i);
       if (end > i) {
-        tokens.push_back(Token{TT::CMPX_LITERAL, lno, llno, code.substr(i, end - i)});
+        tokens.push_back(Token{
+            TT::CMPX_LITERAL, lno, llno, code.substr(i, end - i)});
         i = end;
       } else {
         tokens.push_back(Token{TT::LPAREN, lno, llno, code.substr(i, 1)});
@@ -263,16 +272,44 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
       continue;
     }
 
-    if (c == ')') { tokens.push_back(Token{TT::RPAREN,    lno, llno, code.substr(i, 1)}); i++; continue; }
-    if (c == ',') { tokens.push_back(Token{TT::COMMA,     lno, llno, code.substr(i, 1)}); i++; continue; }
-    if (c == ':') { tokens.push_back(Token{TT::COLON,     lno, llno, code.substr(i, 1)}); i++; continue; }
-    if (c == ';') { tokens.push_back(Token{TT::SEMICOLON, lno, llno, code.substr(i, 1)}); i++; continue; }
-    if (c == '=') { tokens.push_back(Token{TT::ASSIGN,    lno, llno, code.substr(i, 1)}); i++; continue; }
-    if (c == '+') { tokens.push_back(Token{TT::PLUS,      lno, llno, code.substr(i, 1)}); i++; continue; }
-    if (c == '-') { tokens.push_back(Token{TT::MINUS,     lno, llno, code.substr(i, 1)}); i++; continue; }
+    if (c == ')') {
+      tokens.push_back(Token{TT::RPAREN, lno, llno, code.substr(i, 1)});
+      i++;
+      continue;
+    }
+    if (c == ',') {
+      tokens.push_back(Token{TT::COMMA, lno, llno, code.substr(i, 1)});
+      i++;
+      continue;
+    }
+    if (c == ':') {
+      tokens.push_back(Token{TT::COLON, lno, llno, code.substr(i, 1)});
+      i++;
+      continue;
+    }
+    if (c == ';') {
+      tokens.push_back(Token{TT::SEMICOLON, lno, llno, code.substr(i, 1)});
+      i++;
+      continue;
+    }
+    if (c == '=') {
+      tokens.push_back(Token{TT::ASSIGN, lno, llno, code.substr(i, 1)});
+      i++;
+      continue;
+    }
+    if (c == '+') {
+      tokens.push_back(Token{TT::PLUS, lno, llno, code.substr(i, 1)});
+      i++;
+      continue;
+    }
+    if (c == '-') {
+      tokens.push_back(Token{TT::MINUS, lno, llno, code.substr(i, 1)});
+      i++;
+      continue;
+    }
 
     if (c == '*') {
-      if (i + 1 < n && code[i + 1] == '*') {
+      if (i + 1 < n and code[i + 1] == '*') {
         tokens.push_back(Token{TT::DSTAR, lno, llno, code.substr(i, 2)});
         i += 2;
       } else {
@@ -283,7 +320,7 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
     }
 
     if (c == '/') {
-      if (i + 1 < n && code[i + 1] == '/') {
+      if (i + 1 < n and code[i + 1] == '/') {
         tokens.push_back(Token{TT::DSLASH, lno, llno, code.substr(i, 2)});
         i += 2;
       } else {
@@ -295,20 +332,20 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
 
     // dot: dotted operator or real literal starting with '.'
     if (c == '.') {
-      if (i + 1 < n && std::isdigit(static_cast<unsigned char>(code[i + 1]))) {
+      if (i + 1 < n and std::isdigit(static_cast<unsigned char>(code[i + 1]))) {
         // real/double literal starting with '.'
         s::size_t j = i + 1;
-        while (j < n && std::isdigit(static_cast<unsigned char>(code[j]))) j++;
+        while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) j++;
         TT tt = TT::RL_LITERAL;
         if (j < n) {
           char ec = static_cast<char>(std::tolower(static_cast<unsigned char>(code[j])));
-          if (ec == 'e' || ec == 'd') {
+          if (ec == 'e' or ec == 'd') {
             s::size_t k = j + 1;
-            if (k < n && (code[k] == '+' || code[k] == '-')) k++;
-            if (k < n && std::isdigit(static_cast<unsigned char>(code[k]))) {
+            if (k < n and (code[k] == '+' or code[k] == '-')) k++;
+            if (k < n and std::isdigit(static_cast<unsigned char>(code[k]))) {
               tt = (ec == 'd') ? TT::DBL_LITERAL : TT::RL_LITERAL;
               j = k;
-              while (j < n && std::isdigit(static_cast<unsigned char>(code[j]))) j++;
+              while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) j++;
             }
           }
         }
@@ -324,12 +361,12 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
     }
 
     // string literals
-    if (c == '\'' || c == '"') {
+    if (c == '\'' or c == '"') {
       char delim = static_cast<char>(c);
       s::size_t j = i + 1;
       while (j < n) {
         if (code[j] == delim) {
-          if (j + 1 < n && code[j + 1] == delim) {
+          if (j + 1 < n and code[j + 1] == delim) {
             j += 2; // doubled quote = escaped quote
           } else {
             j++;
@@ -339,7 +376,8 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
           j++;
         }
       }
-      tokens.push_back(Token{TT::CHR_LITERAL, lno, llno, code.substr(i, j - i)});
+      tokens.push_back(Token{
+          TT::CHR_LITERAL, lno, llno, code.substr(i, j - i)});
       i = j;
       continue;
     }
@@ -347,17 +385,18 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
     // number literal starting with digit
     if (std::isdigit(c)) {
       s::size_t j = i;
-      while (j < n && std::isdigit(static_cast<unsigned char>(code[j]))) j++;
+      while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) j++;
 
       TT tt = TT::INT_LITERAL;
 
       // check for decimal point
-      if (j < n && code[j] == '.') {
+      if (j < n and code[j] == '.') {
         char after_dot = (j + 1 < n) ? code[j + 1] : '\0';
-        if (!std::isalpha(static_cast<unsigned char>(after_dot)) && after_dot != '_') {
+        if (not std::isalpha(static_cast<unsigned char>(after_dot))
+            and after_dot != '_') {
           // consume decimal point
           j++;
-          while (j < n && std::isdigit(static_cast<unsigned char>(code[j]))) j++;
+          while (j < n and std::isdigit(static_cast<unsigned char>(code[j]))) j++;
           tt = TT::RL_LITERAL;
         }
         // else: '.' starts a dotted operator, don't consume it
@@ -366,13 +405,14 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
       // check for exponent
       if (j < n) {
         char ec = static_cast<char>(std::tolower(static_cast<unsigned char>(code[j])));
-        if (ec == 'e' || ec == 'd') {
+        if (ec == 'e' or ec == 'd') {
           s::size_t k = j + 1;
-          if (k < n && (code[k] == '+' || code[k] == '-')) k++;
-          if (k < n && std::isdigit(static_cast<unsigned char>(code[k]))) {
+          if (k < n and (code[k] == '+' or code[k] == '-')) k++;
+          if (k < n and std::isdigit(static_cast<unsigned char>(code[k]))) {
             tt = (ec == 'd') ? TT::DBL_LITERAL : TT::RL_LITERAL;
             j = k;
-            while (j < n && std::isdigit(static_cast<unsigned char>(code[j]))) j++;
+            while (j < n and std::isdigit(static_cast<unsigned char>(code[j])))
+              j++;
           }
           // else: no digits after exponent letter, backtrack (don't consume E/D)
         }
@@ -384,11 +424,11 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
     }
 
     // identifier or keyword (ASCII only: alpha or '_')
-    if (std::isalpha(c) || c == '_') {
+    if (std::isalpha(c) or c == '_') {
       s::size_t j = i;
       while (j < n) {
         unsigned char ch = static_cast<unsigned char>(code[j]);
-        if (std::isalnum(ch) || ch == '_' || ch == '$')
+        if (std::isalnum(ch) or ch == '_' or ch == '$')
           j++;
         else
           break;
@@ -407,7 +447,7 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
     // unknown: greedily consume consecutive unknown codepoints
     {
       s::size_t j = i + codepointSize(c, cp);
-      while (j < n && isUnknownStart(code[j]))
+      while (j < n and isUnknownStart(code[j]))
         j += codepointSize(static_cast<unsigned char>(code[j]), cp);
       tokens.push_back(Token{TT::UNKNOWN, lno, llno, code.substr(i, j - i)});
       i = j;
@@ -415,7 +455,7 @@ void Lexer::tokenizeCode(s::string_view code, int lno, int llno,
   }
 }
 
-s::vector<Token> Lexer::tokenize(const s::string& source_code, int start_lno) {
+s::vector<Token> Lexer::tokenize(s::string_view source_code, int start_lno) {
   s::vector<Token> tokens;
   Codepoint cp = mConf.codepoint;
   int src_col = mConf.SCSrcCol;
@@ -450,13 +490,13 @@ s::vector<Token> Lexer::tokenize(const s::string& source_code, int start_lno) {
     s::size_t byte_cont = byteOffsetOfCol(line, cont_col, cp);
     if (byte_cont >= line.size()) return false;
     char ch = line[byte_cont];
-    return ch != ' ' && ch != '0';
+    return ch != ' ' and ch != '0';
   };
 
   auto isComment = [](s::string_view line) -> bool {
     if (line.empty()) return false;
     char c = line[0];
-    return c == 'C' || c == 'c' || c == '*';
+    return c == 'C' or c == 'c' or c == '*';
   };
 
   for (int idx = 0; idx < n; idx++) {
@@ -476,14 +516,15 @@ s::vector<Token> Lexer::tokenize(const s::string& source_code, int start_lno) {
         s::size_t byte_past = byteOffsetOfCol(line, max_col + 1, cp);
         bool has_content = false;
         for (s::size_t b = byte_past; b < line.size(); b++) {
-          if (line[b] != ' ' && line[b] != '\t') {
+          if (line[b] != ' ' and line[b] != '\t') {
             has_content = true;
             break;
           }
         }
         if (has_content) {
-          throw oob_error("line " + s::to_string(lno) +
-                          " exceeds maximum column " + s::to_string(max_col + 1));
+          throw oob_error(
+              "line " + s::to_string(lno) +
+              " exceeds maximum column " + s::to_string(max_col + 1));
         }
       }
     }
@@ -491,7 +532,7 @@ s::vector<Token> Lexer::tokenize(const s::string& source_code, int start_lno) {
     bool cont = isContinuation(line);
 
     // Label field: only for non-continuation lines
-    if (!cont) {
+    if (not cont) {
       // Label field byte range: [0, byte_offset_of(cont_col))
       s::size_t label_byte_end = byteOffsetOfCol(line, label_end, cp);
       label_byte_end = s::min(label_byte_end, line.size());
@@ -501,8 +542,9 @@ s::vector<Token> Lexer::tokenize(const s::string& source_code, int start_lno) {
         s::size_t ls = label_field.find_first_not_of(' ');
         if (ls != s::string_view::npos) {
           s::size_t le = label_field.find_last_not_of(' ');
-          tokens.push_back(Token{TT::LABEL, lno, llno,
-                                 label_field.substr(ls, le - ls + 1)});
+          tokens.push_back(Token{
+              TT::LABEL, lno, llno,
+              label_field.substr(ls, le - ls + 1)});
         }
       }
     }
@@ -512,7 +554,7 @@ s::vector<Token> Lexer::tokenize(const s::string& source_code, int start_lno) {
     s::size_t byte_max = byteOffsetOfCol(line, max_col + 1, cp);
     byte_max = s::min(byte_max, line.size());
 
-    if (byte_src < line.size() && byte_src < byte_max) {
+    if (byte_src < line.size() and byte_src < byte_max) {
       s::string_view code = line.substr(byte_src, byte_max - byte_src);
 
       // Strip inline comment: find first '!' outside string literals
@@ -520,15 +562,15 @@ s::vector<Token> Lexer::tokenize(const s::string& source_code, int start_lno) {
         s::size_t ci = 0;
         while (ci < code.size()) {
           char ch = code[ci];
-          if (ch == '!' ) {
+          if (ch == '!') {
             code = code.substr(0, ci);
             break;
-          } else if (ch == '\'' || ch == '"') {
+          } else if (ch == '\'' or ch == '"') {
             char delim = ch;
             ci++;
             while (ci < code.size()) {
               if (code[ci] == delim) {
-                if (ci + 1 < code.size() && code[ci + 1] == delim) {
+                if (ci + 1 < code.size() and code[ci + 1] == delim) {
                   ci += 2;
                 } else {
                   ci++;
@@ -557,13 +599,14 @@ s::vector<Token> Lexer::tokenize(const s::string& source_code, int start_lno) {
       break;
     }
 
-    if (!next_is_cont) {
+    if (not next_is_cont) {
       tokens.push_back(Token{TT::NEWLINE, lno, llno, s::string_view{}});
       llno++;
     }
   }
 
-  tokens.push_back(Token{TT::END_OF_FILE, start_lno + n, llno, s::string_view{}});
+  tokens.push_back(Token{
+      TT::END_OF_FILE, start_lno + n, llno, s::string_view{}});
   return tokens;
 }
 
