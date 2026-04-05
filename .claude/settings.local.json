@@ -23,7 +23,9 @@
       "Bash(make)",
       "Bash(make test:*)",
       "Bash(xargs ls:*)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Bash(find /Users/armandli/.claude/plugins -type f -name *.md -o -name *.txt)",
+      "Bash(find /Users/armandli/.claude/plugins/marketplaces -type f -name *.md)"
     ]
   },
   "hooks": {
