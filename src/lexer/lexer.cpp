@@ -2,15 +2,15 @@
 
 #include <algorithm>
 #include <cctype>
-#include <unordered_map>
 
 #include <exception.h>
+#include <namelookup.h>
 
 namespace f77i {
 
 namespace {
 
-const s::unordered_map<s::string, TT> kKeywords = {
+const umap<s::string, TT> kKeywords = {
   {"integer",     TT::INTEGER},
   {"real",        TT::REAL},
   {"double",      TT::DOUBLE},
@@ -59,7 +59,7 @@ const s::unordered_map<s::string, TT> kKeywords = {
   {"return",      TT::RETURN},
 };
 
-const s::unordered_map<s::string, TT> kDotOps = {
+const umap<s::string, TT> kDotOps = {
   {"eq",   TT::EQ},
   {"ne",   TT::NE},
   {"lt",   TT::LT},
@@ -222,14 +222,10 @@ TT Lexer::parseDotToken(
     return TT::UNKNOWN;
   }
 
-  s::string name(code.substr(name_start, j - name_start));
-  s::transform(name.begin(), name.end(), name.begin(),
-               [](unsigned char c) { return s::tolower(c); });
-
-  auto it = kDotOps.find(name);
-  if (it != kDotOps.end()) {
+  auto dot_result = namelookup(code.substr(name_start, j - name_start), kDotOps);
+  if (dot_result) {
     out_end = j + 1; // include closing '.'
-    return it->second;
+    return *dot_result;
   }
 
   out_end = i + 1;
@@ -434,11 +430,8 @@ void Lexer::tokenizeCode(
           break;
       }
       s::string_view raw = code.substr(i, j - i);
-      s::string lower(raw);
-      s::transform(lower.begin(), lower.end(), lower.begin(),
-                   [](unsigned char ch) { return s::tolower(ch); });
-      auto it = kKeywords.find(lower);
-      TT tt = (it != kKeywords.end()) ? it->second : TT::IDENTIFIER;
+      auto kw_result = namelookup(raw, kKeywords);
+      TT tt = kw_result ? *kw_result : TT::IDENTIFIER;
       tokens.push_back(Token{tt, lno, llno, raw});
       i = j;
       continue;
