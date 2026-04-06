@@ -60,19 +60,19 @@ const s::unordered_map<s::string, TT> kKeywords = {
 };
 
 const s::unordered_map<s::string, TT> kDotOps = {
-  {"EQ",   TT::EQ},
-  {"NE",   TT::NE},
-  {"LT",   TT::LT},
-  {"LE",   TT::LE},
-  {"GT",   TT::GT},
-  {"GE",   TT::GE},
-  {"AND",  TT::AND},
-  {"OR",   TT::OR},
-  {"NOT",  TT::NOT},
-  {"EQV",  TT::EQV},
-  {"NEQV", TT::NEQV},
-  {"TRUE", TT::TRUE},
-  {"FALSE",TT::FALSE},
+  {"eq",   TT::EQ},
+  {"ne",   TT::NE},
+  {"lt",   TT::LT},
+  {"le",   TT::LE},
+  {"gt",   TT::GT},
+  {"ge",   TT::GE},
+  {"and",  TT::AND},
+  {"or",   TT::OR},
+  {"not",  TT::NOT},
+  {"eqv",  TT::EQV},
+  {"neqv", TT::NEQV},
+  {"true", TT::TRUE},
+  {"false",TT::FALSE},
 };
 
 s::size_t codepointSize(unsigned char c, Codepoint cp) {
@@ -224,7 +224,7 @@ TT Lexer::parseDotToken(
 
   s::string name(code.substr(name_start, j - name_start));
   s::transform(name.begin(), name.end(), name.begin(),
-               [](unsigned char c) { return s::toupper(c); });
+               [](unsigned char c) { return s::tolower(c); });
 
   auto it = kDotOps.find(name);
   if (it != kDotOps.end()) {

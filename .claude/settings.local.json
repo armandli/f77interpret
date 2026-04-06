@@ -30,7 +30,9 @@
       "Bash(build/bin/f77interpret_test 2>&1)",
       "Bash(build/bin/f77interpret_test)",
       "Read(//Users/armandli/.claude/skills/**)",
-      "Bash(cmake --build .)"
+      "Bash(cmake --build .)",
+      "Bash(find /Users/armandli/.claude/plugins/marketplaces -name *.md)",
+      "Bash(find /Users/armandli/.claude/plugins/data -name *.md)"
     ]
   },
   "hooks": {
