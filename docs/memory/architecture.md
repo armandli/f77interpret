@@ -49,6 +49,18 @@ classDiagram
             #isCommentLine(line string) bool
             #isContinuationLine(line string) bool
         }
+        class SourceFile {
+            -Config mConf
+            -path mPath
+            -string mContent
+            -vector~Token~ mTokens
+            +SourceFile(path path, conf Config)
+            +SourceFile(other SourceFile)
+            +filename() path
+            +content() string
+            +tokens() vector~Token~
+            #tokenize()
+        }
     }
     class main {
         <<entrypoint>>
@@ -58,4 +70,7 @@ classDiagram
     Token --> TT : uses
     Lexer --> Config : owns
     Lexer --> Token : produces
+    SourceFile --> Config : references
+    SourceFile --> Lexer : uses
+    SourceFile --> Token : owns
 ```
