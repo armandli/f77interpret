@@ -37,7 +37,10 @@
       "Bash(./build/bin/f77interpret_test --gtest_filter=\"LexerTest.TokenNEWLINE:LexerTest.TokenEND_OF_FILE:LexerTest.CommentLineCSkipped:LexerTest.EmptySourceEOF\" 2>&1)",
       "Bash(git stash:*)",
       "Bash(cmake --build build --quiet)",
-      "Bash(./build/bin/f77interpret_test --gtest_filter=LexerTest.TokenNEWLINE:LexerTest.TokenEND_OF_FILE:LexerTest.CommentLineCSkipped:LexerTest.EmptySourceEOF)"
+      "Bash(./build/bin/f77interpret_test --gtest_filter=LexerTest.TokenNEWLINE:LexerTest.TokenEND_OF_FILE:LexerTest.CommentLineCSkipped:LexerTest.EmptySourceEOF)",
+      "Bash(/Users/armandli/f77interpret/bin/f77interpret --debug-tokenizer)",
+      "Bash(/Users/armandli/f77interpret/build/bin/f77interpret --debug-tokenizer)",
+      "Bash(/Users/armandli/f77interpret/build/bin/f77interpret --help)"
     ]
   },
   "hooks": {

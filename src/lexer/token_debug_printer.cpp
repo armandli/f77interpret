@@ -1,7 +1,5 @@
 #include <token_debug_printer.h>
 
-#include <iostream>
-
 namespace f77i {
 
 namespace {
@@ -97,11 +95,12 @@ const char* tt_name(TT type) {
 
 } // namespace
 
-void TokenDebugPrinter::print(const Token& token) const {
-  s::cout << "Token { type=" << tt_name(token.type)
-          << ", lno=" << token.lno
-          << ", llno=" << token.llno
-          << ", value=\"" << token.value << "\" }\n";
+s::ostream& TokenDebugPrinter::print(s::ostream& out, const Token& token) const {
+  out << "Token { type=" << tt_name(token.type)
+      << ", lno=" << token.lno
+      << ", llno=" << token.llno
+      << ", value=\"" << token.value << "\" }\n";
+  return out;
 }
 
 } // namespace f77i

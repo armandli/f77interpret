@@ -3,6 +3,8 @@
 #include <boost/program_options.hpp>
 #include <alias.h>
 #include <config.h>
+#include <interactive_source_file.h>
+#include <token_debug_printer.h>
 
 namespace po = boost::program_options;
 
@@ -16,7 +18,8 @@ int main(int argc, char* argv[]) {
     ("file", po::value<s::string>(), "FORTRAN 77 source file to interpret")
     ("codepoint",
       po::value<s::string>()->default_value("ASCII"),
-      "character encoding: ASCII (default), UTF8, CODEPAGE");
+      "character encoding: ASCII (default), UTF8, CODEPAGE")
+    ("debug-tokenizer", "tokenize input and print tokens (REPL mode only)");
 
   po::positional_options_description pos;
   pos.add("file", 1);
@@ -56,6 +59,9 @@ int main(int argc, char* argv[]) {
       return 1;
     }
   }
+  if (vm.count("debug-tokenizer")) {
+    config.debug_tokenizer = true;
+  }
 
   if (not config.source_file.empty()) {
     s::ifstream file(config.source_file);
@@ -66,9 +72,19 @@ int main(int argc, char* argv[]) {
     // TODO: pass file stream and config to interpreter
   } else {
     // Interactive mode
+    f77i::InteractiveSourceFile isf(config);
+    f77i::TokenDebugPrinter printer;
     s::string line;
     while (s::getline(s::cin, line)) {
-      // TODO: pass line and config to interpreter
+      s::size_t prev = isf.tokens().size();
+      isf.append(line);
+      if (config.debug_tokenizer) {
+        const auto& tokens = isf.tokens();
+        for (s::size_t i = prev; i < tokens.size(); ++i) {
+          printer.print(s::cout, tokens[i]);
+        }
+      }
+      // TODO: pass isf and config to interpreter
     }
   }
 
