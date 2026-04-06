@@ -66,6 +66,9 @@ classDiagram
             +content() string
             -tokenize()
         }
+        class TokenDebugPrinter {
+            +print(token Token) void
+        }
         class InteractiveSourceFile {
             -deque~string~ mLines
             -int mNextLno
@@ -80,6 +83,7 @@ classDiagram
         +main(argc int, argv string[]) int
     }
     main --> Config : creates
+    TokenDebugPrinter --> Token : inspects
     Token --> TT : uses
     Lexer --> Config : owns
     Lexer --> Token : produces
