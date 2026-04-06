@@ -7,7 +7,7 @@
 namespace f77i {
 
 SourceFile::SourceFile(s::filesystem::path path, const Config& conf)
-    : mConf(conf), mPath(s::move(path)), mContent(), mTokens() {
+    : SourceBase(conf), mPath(s::move(path)), mContent() {
   s::ifstream file(mPath);
   s::ostringstream ss;
   ss << file.rdbuf();
@@ -16,7 +16,7 @@ SourceFile::SourceFile(s::filesystem::path path, const Config& conf)
 }
 
 SourceFile::SourceFile(const SourceFile& other)
-    : mConf(other.mConf), mPath(other.mPath), mContent(other.mContent), mTokens() {
+    : SourceBase(other.mConf), mPath(other.mPath), mContent(other.mContent) {
   tokenize();
 }
 

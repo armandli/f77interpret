@@ -3,29 +3,23 @@
 
 #include <filesystem>
 #include <string>
-#include <vector>
 #include <alias.h>
 #include <config.h>
-#include <token.h>
+#include <source_base.h>
 
 namespace f77i {
 
-struct SourceFile {
+struct SourceFile : SourceBase {
   SourceFile(s::filesystem::path path, const Config& conf);
   SourceFile(const SourceFile& other);
 
   s::filesystem::path filename() const { return mPath; }
-  const s::string& content() const { return mContent; }
-  const s::vector<Token>& tokens() const { return mTokens; }
-
-protected:
-  void tokenize();
+  const s::string& content() const override { return mContent; }
 
 private:
-  const Config& mConf;
+  void tokenize();
   s::filesystem::path mPath;
-  s::string mContent;
-  s::vector<Token> mTokens;
+  s::string           mContent;
 };
 
 } // namespace f77i

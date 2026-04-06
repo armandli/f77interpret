@@ -49,17 +49,30 @@ classDiagram
             #isCommentLine(line string) bool
             #isContinuationLine(line string) bool
         }
+        class SourceBase {
+            <<abstract>>
+            #Config mConf
+            #vector~Token~ mTokens
+            +SourceBase(conf Config)
+            +tokens() vector~Token~
+            +content() string*
+        }
         class SourceFile {
-            -Config mConf
             -path mPath
             -string mContent
-            -vector~Token~ mTokens
             +SourceFile(path path, conf Config)
             +SourceFile(other SourceFile)
             +filename() path
             +content() string
-            +tokens() vector~Token~
-            #tokenize()
+            -tokenize()
+        }
+        class InteractiveSourceFile {
+            -deque~string~ mLines
+            -int mNextLno
+            +InteractiveSourceFile(conf Config)
+            +append(text string)
+            +lineCount() int
+            +content() string
         }
     }
     class main {
@@ -70,7 +83,10 @@ classDiagram
     Token --> TT : uses
     Lexer --> Config : owns
     Lexer --> Token : produces
-    SourceFile --> Config : references
+    SourceBase --> Config : references
+    SourceBase --> Token : owns
+    SourceFile --|> SourceBase : extends
     SourceFile --> Lexer : uses
-    SourceFile --> Token : owns
+    InteractiveSourceFile --|> SourceBase : extends
+    InteractiveSourceFile --> Lexer : uses
 ```
