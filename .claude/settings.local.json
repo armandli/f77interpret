@@ -48,7 +48,10 @@
       "Bash(printf \"PROGRAM HELLO\\\\n\\\\nX = 1.0E2\\\\n\\\\n\")",
       "Bash(printf \"X = 1 +\\\\n     12\\\\n\\\\n\")",
       "Bash(printf \"PROGRAM HELLO\\\\n\\\\n\")",
-      "Bash(xxd)"
+      "Bash(xxd)",
+      "Bash(printf '      PROGRAM HELLO\\\\n      END\\\\n')",
+      "Bash(printf n:*)",
+      "Bash(/Users/armandli/f77interpret/build/bin/f77interpret --debug-tokenizer /tmp/test.f77)"
     ]
   },
   "hooks": {

@@ -3,6 +3,7 @@
 #include <boost/program_options.hpp>
 #include <alias.h>
 #include <config.h>
+#include <source_file.h>
 #include <interactive_source_file.h>
 #include <token_debug_printer.h>
 
@@ -64,42 +65,44 @@ int main(int argc, char* argv[]) {
   }
 
   if (not config.source_file.empty()) {
-    s::ifstream file(config.source_file);
-    if (not file.is_open()) {
+    s::ifstream check(config.source_file);
+    if (not check.is_open()) {
       s::cerr << "error: cannot open file '" << config.source_file << "'\n";
       return 1;
     }
-    // TODO: pass file stream and config to interpreter
-  } else {
-    // Interactive mode
-    f77i::InteractiveSourceFile isf(config);
-    f77i::TokenDebugPrinter printer;
-    s::string line;
-    s::vector<s::string> pending;
-    auto flush_pending = [&]() {
-      if (pending.empty()) return;
-      s::size_t prev = isf.tokens().size();
-      for (const auto& l : pending)
-        isf.append(l);
-      pending.clear();
-      if (config.debug_tokenizer) {
-        const auto& tokens = isf.tokens();
-        for (s::size_t i = prev; i < tokens.size(); ++i)
-          printer.print(s::cout, tokens[i]);
-      }
-      // TODO: pass isf and config to interpreter
-    };
-    while (true) {
-      s::cout << "      " << s::flush;
-      if (not s::getline(s::cin, line)) {
-        flush_pending();
-        break;
-      }
-      if (line.find_first_not_of(" \t") == s::string::npos) {
-        flush_pending();
-      } else {
-        pending.push_back("      " + line);
-      }
+    check.close();
+    f77i::SourceFile sf(config.source_file, config);
+    // TODO: pass sf and config to interpreter
+  }
+
+  // Interactive mode
+  f77i::InteractiveSourceFile isf(config);
+  f77i::TokenDebugPrinter printer;
+  s::string line;
+  s::vector<s::string> pending;
+  auto flush_pending = [&]() {
+    if (pending.empty()) return;
+    s::size_t prev = isf.tokens().size();
+    for (const auto& l : pending)
+      isf.append(l);
+    pending.clear();
+    if (config.debug_tokenizer) {
+      const auto& tokens = isf.tokens();
+      for (s::size_t i = prev; i < tokens.size(); ++i)
+        printer.print(s::cout, tokens[i]);
+    }
+    // TODO: pass isf and config to interpreter
+  };
+  while (true) {
+    s::cout << "      " << s::flush;
+    if (not s::getline(s::cin, line)) {
+      flush_pending();
+      break;
+    }
+    if (line.find_first_not_of(" \t") == s::string::npos) {
+      flush_pending();
+    } else {
+      pending.push_back("      " + line);
     }
   }
 
