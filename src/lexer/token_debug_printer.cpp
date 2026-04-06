@@ -52,6 +52,7 @@ const char* tt_name(TT type) {
     case TT::INCLUDE:    return "INCLUDE";
     case TT::CALL:       return "CALL";
     case TT::RETURN:     return "RETURN";
+    case TT::INTERFACE:  return "INTERFACE";
     case TT::PLUS:       return "PLUS";
     case TT::MINUS:      return "MINUS";
     case TT::STAR:       return "STAR";

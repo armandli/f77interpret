@@ -75,16 +75,31 @@ int main(int argc, char* argv[]) {
     f77i::InteractiveSourceFile isf(config);
     f77i::TokenDebugPrinter printer;
     s::string line;
-    while (s::getline(s::cin, line)) {
+    s::vector<s::string> pending;
+    auto flush_pending = [&]() {
+      if (pending.empty()) return;
       s::size_t prev = isf.tokens().size();
-      isf.append(line);
+      for (const auto& l : pending)
+        isf.append(l);
+      pending.clear();
       if (config.debug_tokenizer) {
         const auto& tokens = isf.tokens();
-        for (s::size_t i = prev; i < tokens.size(); ++i) {
+        for (s::size_t i = prev; i < tokens.size(); ++i)
           printer.print(s::cout, tokens[i]);
-        }
       }
       // TODO: pass isf and config to interpreter
+    };
+    while (true) {
+      s::cout << "      " << s::flush;
+      if (not s::getline(s::cin, line)) {
+        flush_pending();
+        break;
+      }
+      if (line.find_first_not_of(" \t") == s::string::npos) {
+        flush_pending();
+      } else {
+        pending.push_back("      " + line);
+      }
     }
   }
 

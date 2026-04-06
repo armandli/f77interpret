@@ -54,6 +54,7 @@ enum class TT : int {
   INCLUDE,
   CALL,
   RETURN,
+  INTERFACE,
 
   // operators
   PLUS,

@@ -40,7 +40,15 @@
       "Bash(./build/bin/f77interpret_test --gtest_filter=LexerTest.TokenNEWLINE:LexerTest.TokenEND_OF_FILE:LexerTest.CommentLineCSkipped:LexerTest.EmptySourceEOF)",
       "Bash(/Users/armandli/f77interpret/bin/f77interpret --debug-tokenizer)",
       "Bash(/Users/armandli/f77interpret/build/bin/f77interpret --debug-tokenizer)",
-      "Bash(/Users/armandli/f77interpret/build/bin/f77interpret --help)"
+      "Bash(/Users/armandli/f77interpret/build/bin/f77interpret --help)",
+      "Bash(printf \"      X=0.D0\\\\n      Y=0.E0\\\\n\")",
+      "Bash(grep -E \"\\(error:|warning:|Built target f77interpret$\\)\")",
+      "Bash(printf \"      X=0.D0\\\\n      Y=0.E0\\\\n      Z=0.D+1\\\\n      W=1.5D2\\\\n      V=0.D\\\\n\")",
+      "Bash(grep -E \"\\(error:|Built target f77interpret$\\)\")",
+      "Bash(printf \"PROGRAM HELLO\\\\n\\\\nX = 1.0E2\\\\n\\\\n\")",
+      "Bash(printf \"X = 1 +\\\\n     12\\\\n\\\\n\")",
+      "Bash(printf \"PROGRAM HELLO\\\\n\\\\n\")",
+      "Bash(xxd)"
     ]
   },
   "hooks": {

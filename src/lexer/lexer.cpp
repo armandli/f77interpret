@@ -57,6 +57,7 @@ const umap<s::string, TT> kKeywords = {
   {"include",     TT::INCLUDE},
   {"call",        TT::CALL},
   {"return",      TT::RETURN},
+  {"interface",   TT::INTERFACE},
 };
 
 const umap<s::string, TT> kDotOps = {
@@ -388,8 +389,19 @@ void Lexer::tokenizeCode(
       // check for decimal point
       if (j < n and code[j] == '.') {
         char after_dot = (j + 1 < n) ? code[j + 1] : '\0';
-        if (not s::isalpha(static_cast<unsigned char>(after_dot))
-            and after_dot != '_') {
+        char after_dot_lc = static_cast<char>(
+            s::tolower(static_cast<unsigned char>(after_dot)));
+        bool is_exp_letter = (after_dot_lc == 'e' or after_dot_lc == 'd');
+        bool exp_has_digits = false;
+        if (is_exp_letter) {
+          s::size_t k = j + 2; // skip '.' and exponent letter
+          if (k < n and (code[k] == '+' or code[k] == '-')) k++;
+          exp_has_digits = (k < n and s::isdigit(
+              static_cast<unsigned char>(code[k])));
+        }
+        if ((not s::isalpha(static_cast<unsigned char>(after_dot))
+             and after_dot != '_')
+            or (is_exp_letter and exp_has_digits)) {
           // consume decimal point
           j++;
           while (j < n and s::isdigit(static_cast<unsigned char>(code[j]))) j++;
