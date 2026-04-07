@@ -66,6 +66,13 @@ classDiagram
             +content() string
             -tokenize()
         }
+        class ASTNode {
+            <<abstract>>
+            +int label
+            +ASTNode()
+            +ASTNode(label int)
+            +~ASTNode() virtual
+        }
         class TokenDebugPrinter {
             +print(token Token) void
         }

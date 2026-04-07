@@ -9,6 +9,7 @@ target_include_directories(f77interpret_lib PUBLIC
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/src/util
     ${CMAKE_SOURCE_DIR}/src/lexer
+    ${CMAKE_SOURCE_DIR}/src/parser
 )
 
 add_subdirectory(app)
