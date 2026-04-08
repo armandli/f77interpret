@@ -66,12 +66,62 @@ classDiagram
             +content() string
             -tokenize()
         }
+        class TY {
+            <<enumeration>>
+            INTEGER REAL DOUBLE COMPLEX CHARACTER LOGICAL VOID UNKNOWN
+        }
+        class VT {
+            <<enumeration>>
+            VARLEN UNKNOWN
+        }
         class ASTNode {
             <<abstract>>
             +int label
             +ASTNode()
             +ASTNode(label int)
             +~ASTNode() virtual
+        }
+        class CmpStmt {
+            +vector~ASTNode*~ stmts
+            +CmpStmt()
+            +CmpStmt(other CmpStmt)
+            +~CmpStmt() override
+        }
+        class Sub {
+            +string_view name
+            +vector~string_view~ parameters
+            +CmpStmt body
+            +Sub(name string_view, parameters vector, body CmpStmt)
+            +~Sub() override
+        }
+        class Prog {
+            +string_view name
+            +CmpStmt body
+            +Prog(name string_view, body CmpStmt)
+            +~Prog() override
+        }
+        class If {
+            +ASTNode* condition
+            +ASTNode* else_block
+            +CmpStmt body
+            +If()
+            +If(condition ASTNode*, else_block ASTNode*, body CmpStmt)
+            +~If() override
+        }
+        class Do {
+            +ASTNode* init
+            +ASTNode* fin
+            +ASTNode* step
+            +CmpStmt body
+            +Do()
+            +Do(init ASTNode*, fin ASTNode*, body CmpStmt&&, label int)
+            +Do(init ASTNode*, fin ASTNode*, step ASTNode*, body CmpStmt&&, label int)
+            +~Do() override
+        }
+        class IndexList {
+            +vector~ASTNode*~ indexes
+            +IndexList(indexes vector~ASTNode*~, label int)
+            +~IndexList() override
         }
         class TokenDebugPrinter {
             +print(token Token) void
@@ -100,4 +150,19 @@ classDiagram
     SourceFile --> Lexer : uses
     InteractiveSourceFile --|> SourceBase : extends
     InteractiveSourceFile --> Lexer : uses
+    CmpStmt --|> ASTNode : extends
+    Sub --|> ASTNode : extends
+    Prog --|> ASTNode : extends
+    If --|> ASTNode : extends
+    Sub --> CmpStmt : owns
+    Prog --> CmpStmt : owns
+    If --> CmpStmt : owns
+    If --> ASTNode : condition
+    If --> ASTNode : else_block
+    Do --|> ASTNode : extends
+    Do --> CmpStmt : owns
+    Do --> ASTNode : init
+    Do --> ASTNode : fin
+    Do --> ASTNode : step
+    IndexList --|> ASTNode : extends
 ```
