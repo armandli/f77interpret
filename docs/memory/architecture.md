@@ -74,6 +74,14 @@ classDiagram
             <<enumeration>>
             VARLEN UNKNOWN
         }
+        class BOP {
+            <<enumeration>>
+            ADD SUB MUL DIV POW EQ NE GT GE LT LE AND OR NOT EQV NEQV CAT UNKNOWN
+        }
+        class UOP {
+            <<enumeration>>
+            NEG POS NOT UNKNOWN
+        }
         class ASTNode {
             <<abstract>>
             +int label
@@ -133,6 +141,27 @@ classDiagram
             +Function(name string_view, parameters vector, return_type FunType, body CmpStmt&&, label int)
             +~Function() override
         }
+        class BinaryOp {
+            +BOP op
+            +ASTNode* left
+            +ASTNode* right
+            +FunType rtype
+            +BinaryOp(op BOP, left ASTNode*, right ASTNode*, rtype FunType, label int)
+            +~BinaryOp() override
+        }
+        class Var {
+            +string_view name
+            +FunType rtype
+            +Var(name string_view, rtype FunType, label int)
+            +~Var() override
+        }
+        class UnaryOp {
+            +UOP op
+            +ASTNode* expr
+            +FunType rtype
+            +UnaryOp(op UOP, expr ASTNode*, rtype FunType, label int)
+            +~UnaryOp() override
+        }
         class Decl {
             +FunType type
             +string_view name
@@ -190,6 +219,14 @@ classDiagram
     Function --|> ASTNode : extends
     Function --> CmpStmt : owns
     Function --> FunType : return_type
+    Var --|> ASTNode : extends
+    Var --> FunType : rtype
+    UnaryOp --|> ASTNode : extends
+    UnaryOp --> UOP : op
+    UnaryOp --> FunType : rtype
+    BinaryOp --|> ASTNode : extends
+    BinaryOp --> BOP : op
+    BinaryOp --> FunType : rtype
     Decl --|> ASTNode : extends
     Decl --> FunType : type
     Decl --> IndexList : sizes

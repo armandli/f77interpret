@@ -1,6 +1,7 @@
 #ifndef F77INTERPRET_PARSER_AST_H
 #define F77INTERPRET_PARSER_AST_H
 
+#include <cassert>
 #include <string_view>
 #include <vector>
 #include <alias.h>
@@ -15,6 +16,14 @@ enum class TY : int {
 
 enum class VT : int {
   VARLEN, UNKNOWN
+};
+
+enum class BOP : int {
+  ADD, SUB, MUL, DIV, POW, EQ, NE, GT, GE, LT, LE, AND, OR, NOT, EQV, NEQV, CAT, UNKNOWN
+};
+
+enum class UOP : int {
+  NEG, POS, NOT, UNKNOWN
 };
 
 struct FunType {
@@ -122,6 +131,45 @@ struct Assign : ASTNode {
     DELETE_IF(variable);
     DELETE_IF(expr);
   }
+};
+
+struct BinaryOp : ASTNode {
+  BOP op;
+  ASTNode* left;
+  ASTNode* right;
+  FunType rtype;
+
+  BinaryOp(BOP op, ASTNode* left, ASTNode* right, FunType rtype, int label = kInvalidLabel)
+    : ASTNode(label), op(op), left(left), right(right), rtype(rtype) {
+    assert(op != BOP::UNKNOWN);
+  }
+  ~BinaryOp() override {
+    DELETE_IF(left);
+    DELETE_IF(right);
+  }
+};
+
+struct UnaryOp : ASTNode {
+  UOP op;
+  ASTNode* expr;
+  FunType rtype;
+
+  UnaryOp(UOP op, ASTNode* expr, FunType rtype, int label = kInvalidLabel)
+    : ASTNode(label), op(op), expr(expr), rtype(rtype) {
+    assert(op != UOP::UNKNOWN);
+  }
+  ~UnaryOp() override {
+    DELETE_IF(expr);
+  }
+};
+
+struct Var : ASTNode {
+  s::string_view name;
+  FunType rtype;
+
+  Var(s::string_view name, FunType rtype, int label = kInvalidLabel)
+    : ASTNode(label), name(name), rtype(rtype) {}
+  ~Var() override = default;
 };
 
 struct Decl : ASTNode {
