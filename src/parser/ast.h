@@ -55,8 +55,8 @@ struct Sub : ASTNode {
   s::vector<s::string_view> parameters;
   CmpStmt body;
 
-  Sub(s::string_view name, s::vector<s::string_view> parameters, CmpStmt&& body)
-    : ASTNode(), name(name), parameters(s::move(parameters)), body(s::move(body)) {}
+  Sub(s::string_view name, s::vector<s::string_view> parameters, CmpStmt&& body, int label = kInvalidLabel)
+    : ASTNode(label), name(name), parameters(s::move(parameters)), body(s::move(body)) {}
   ~Sub() override = default;
 };
 
@@ -64,8 +64,8 @@ struct Prog : ASTNode {
   s::string_view name;
   CmpStmt body;
 
-  Prog(s::string_view name, CmpStmt&& body)
-    : ASTNode(), name(name), body(s::move(body)) {}
+  Prog(s::string_view name, CmpStmt&& body, int label = kInvalidLabel)
+    : ASTNode(label), name(name), body(s::move(body)) {}
   ~Prog() override = default;
 };
 
@@ -75,8 +75,8 @@ struct If : ASTNode {
   CmpStmt body;
 
   If() : ASTNode(), condition(nullptr), else_block(nullptr) {}
-  If(ASTNode* condition, ASTNode* else_block, CmpStmt&& body)
-    : ASTNode(), condition(condition), else_block(else_block), body(s::move(body)) {}
+  If(ASTNode* condition, ASTNode* else_block, CmpStmt&& body, int label = kInvalidLabel)
+    : ASTNode(label), condition(condition), else_block(else_block), body(s::move(body)) {}
   ~If() override {
     DELETE_IF(condition);
     DELETE_IF(else_block);
