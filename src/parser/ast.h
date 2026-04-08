@@ -55,7 +55,7 @@ struct Sub : ASTNode {
   s::vector<s::string_view> parameters;
   CmpStmt body;
 
-  Sub(s::string_view name, s::vector<s::string_view> parameters, CmpStmt body)
+  Sub(s::string_view name, s::vector<s::string_view> parameters, CmpStmt&& body)
     : ASTNode(), name(name), parameters(s::move(parameters)), body(s::move(body)) {}
   ~Sub() override = default;
 };
@@ -64,7 +64,7 @@ struct Prog : ASTNode {
   s::string_view name;
   CmpStmt body;
 
-  Prog(s::string_view name, CmpStmt body)
+  Prog(s::string_view name, CmpStmt&& body)
     : ASTNode(), name(name), body(s::move(body)) {}
   ~Prog() override = default;
 };
@@ -75,7 +75,7 @@ struct If : ASTNode {
   CmpStmt body;
 
   If() : ASTNode(), condition(nullptr), else_block(nullptr) {}
-  If(ASTNode* condition, ASTNode* else_block, CmpStmt body)
+  If(ASTNode* condition, ASTNode* else_block, CmpStmt&& body)
     : ASTNode(), condition(condition), else_block(else_block), body(s::move(body)) {}
   ~If() override {
     DELETE_IF(condition);
@@ -99,6 +99,17 @@ struct Do : ASTNode {
     DELETE_IF(fin);
     DELETE_IF(step);
   }
+};
+
+struct Function : ASTNode {
+  s::string_view name;
+  s::vector<s::string_view> parameters;
+  FunType return_type;
+  CmpStmt body;
+
+  Function(s::string_view name, s::vector<s::string_view> parameters, FunType return_type, CmpStmt&& body, int label = kInvalidLabel)
+    : ASTNode(label), name(name), parameters(s::move(parameters)), return_type(return_type), body(s::move(body)) {}
+  ~Function() override = default;
 };
 
 struct IndexList : ASTNode {
