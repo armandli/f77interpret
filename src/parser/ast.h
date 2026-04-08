@@ -112,6 +112,18 @@ struct Function : ASTNode {
   ~Function() override = default;
 };
 
+struct Assign : ASTNode {
+  ASTNode* variable;
+  ASTNode* expr;
+
+  Assign(ASTNode* variable, ASTNode* expr, int label = kInvalidLabel)
+    : ASTNode(label), variable(variable), expr(expr) {}
+  ~Assign() override {
+    DELETE_IF(variable);
+    DELETE_IF(expr);
+  }
+};
+
 struct Decl : ASTNode {
   FunType type;
   s::string_view name;
