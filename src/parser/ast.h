@@ -17,6 +17,17 @@ enum class VT : int {
   VARLEN, UNKNOWN
 };
 
+struct FunType {
+  TY type;
+  size_t size;
+  bool varlen;
+
+  explicit FunType(TY type, VT vt = VT::UNKNOWN)
+    : type(type), size(vt == VT::VARLEN ? 0 : 1), varlen(vt == VT::VARLEN) {}
+  FunType(TY type, size_t size)
+    : type(type), size(size), varlen(false) {}
+};
+
 struct ASTNode {
   static constexpr int kInvalidLabel = -1;
 
