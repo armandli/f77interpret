@@ -112,6 +112,18 @@ struct Function : ASTNode {
   ~Function() override = default;
 };
 
+struct Decl : ASTNode {
+  FunType type;
+  s::string_view name;
+  IndexList* sizes;
+
+  Decl(FunType type, s::string_view name, IndexList* sizes, int label = kInvalidLabel)
+    : ASTNode(label), type(type), name(name), sizes(sizes) {}
+  ~Decl() override {
+    DELETE_IF(sizes);
+  }
+};
+
 struct IndexList : ASTNode {
   s::vector<ASTNode*> indexes;
 

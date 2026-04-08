@@ -91,13 +91,13 @@ classDiagram
             +string_view name
             +vector~string_view~ parameters
             +CmpStmt body
-            +Sub(name string_view, parameters vector, body CmpStmt)
+            +Sub(name string_view, parameters vector, body CmpStmt&&)
             +~Sub() override
         }
         class Prog {
             +string_view name
             +CmpStmt body
-            +Prog(name string_view, body CmpStmt)
+            +Prog(name string_view, body CmpStmt&&)
             +~Prog() override
         }
         class If {
@@ -105,7 +105,7 @@ classDiagram
             +ASTNode* else_block
             +CmpStmt body
             +If()
-            +If(condition ASTNode*, else_block ASTNode*, body CmpStmt)
+            +If(condition ASTNode*, else_block ASTNode*, body CmpStmt&&)
             +~If() override
         }
         class Do {
@@ -117,6 +117,28 @@ classDiagram
             +Do(init ASTNode*, fin ASTNode*, body CmpStmt&&, label int)
             +Do(init ASTNode*, fin ASTNode*, step ASTNode*, body CmpStmt&&, label int)
             +~Do() override
+        }
+        class FunType {
+            +TY type
+            +size_t size
+            +bool varlen
+            +FunType(type TY, vt VT)
+            +FunType(type TY, size size_t)
+        }
+        class Function {
+            +string_view name
+            +vector~string_view~ parameters
+            +FunType return_type
+            +CmpStmt body
+            +Function(name string_view, parameters vector, return_type FunType, body CmpStmt&&, label int)
+            +~Function() override
+        }
+        class Decl {
+            +FunType type
+            +string_view name
+            +IndexList* sizes
+            +Decl(type FunType, name string_view, sizes IndexList*, label int)
+            +~Decl() override
         }
         class IndexList {
             +vector~ASTNode*~ indexes
@@ -165,4 +187,12 @@ classDiagram
     Do --> ASTNode : fin
     Do --> ASTNode : step
     IndexList --|> ASTNode : extends
+    Function --|> ASTNode : extends
+    Function --> CmpStmt : owns
+    Function --> FunType : return_type
+    Decl --|> ASTNode : extends
+    Decl --> FunType : type
+    Decl --> IndexList : sizes
+    FunType --> TY : uses
+    FunType --> VT : uses
 ```
