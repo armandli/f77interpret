@@ -172,6 +172,28 @@ struct Var : ASTNode {
   ~Var() override = default;
 };
 
+struct Lit : ASTNode {
+  FunType type;
+  s::string_view value;
+
+  Lit(FunType type, s::string_view value, int label = kInvalidLabel)
+    : ASTNode(label), type(type), value(value) {}
+  ~Lit() override = default;
+};
+
+struct Indexing : ASTNode {
+  Var* variable;
+  IndexList* indexes;
+  FunType rtype;
+
+  Indexing(Var* variable, IndexList* indexes, FunType rtype, int label = kInvalidLabel)
+    : ASTNode(label), variable(variable), indexes(indexes), rtype(rtype) {}
+  ~Indexing() override {
+    DELETE_IF(variable);
+    DELETE_IF(indexes);
+  }
+};
+
 struct Decl : ASTNode {
   FunType type;
   s::string_view name;

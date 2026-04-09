@@ -162,6 +162,19 @@ classDiagram
             +UnaryOp(op UOP, expr ASTNode*, rtype FunType, label int)
             +~UnaryOp() override
         }
+        class Lit {
+            +FunType type
+            +string_view value
+            +Lit(type FunType, value string_view, label int)
+            +~Lit() override
+        }
+        class Indexing {
+            +Var* variable
+            +IndexList* indexes
+            +FunType rtype
+            +Indexing(variable Var*, indexes IndexList*, rtype FunType, label int)
+            +~Indexing() override
+        }
         class Decl {
             +FunType type
             +string_view name
@@ -227,6 +240,12 @@ classDiagram
     BinaryOp --|> ASTNode : extends
     BinaryOp --> BOP : op
     BinaryOp --> FunType : rtype
+    Lit --|> ASTNode : extends
+    Lit --> FunType : type
+    Indexing --|> ASTNode : extends
+    Indexing --> Var : variable
+    Indexing --> IndexList : indexes
+    Indexing --> FunType : rtype
     Decl --|> ASTNode : extends
     Decl --> FunType : type
     Decl --> IndexList : sizes
