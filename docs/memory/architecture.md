@@ -162,6 +162,17 @@ classDiagram
             +UnaryOp(op UOP, expr ASTNode*, rtype FunType, label int)
             +~UnaryOp() override
         }
+        class Call {
+            +string_view name
+            +vector~ASTNode*~ arguments
+            +FunType rtype
+            +Call(name string_view, arguments vector~ASTNode*~, rtype FunType, label int)
+            +~Call() override
+        }
+        class Star {
+            +Star(label int)
+            +~Star() override
+        }
         class Lit {
             +FunType type
             +string_view value
@@ -240,6 +251,9 @@ classDiagram
     BinaryOp --|> ASTNode : extends
     BinaryOp --> BOP : op
     BinaryOp --> FunType : rtype
+    Call --|> ASTNode : extends
+    Call --> FunType : rtype
+    Star --|> ASTNode : extends
     Lit --|> ASTNode : extends
     Lit --> FunType : type
     Indexing --|> ASTNode : extends

@@ -172,6 +172,25 @@ struct Var : ASTNode {
   ~Var() override = default;
 };
 
+struct Star : ASTNode {
+  Star(int label = kInvalidLabel) : ASTNode(label) {}
+  ~Star() override = default;
+};
+
+struct Call : ASTNode {
+  s::string_view name;
+  s::vector<ASTNode*> arguments;
+  FunType rtype;
+
+  Call(s::string_view name, s::vector<ASTNode*>&& arguments, FunType rtype, int label = kInvalidLabel)
+    : ASTNode(label), name(name), arguments(s::move(arguments)), rtype(rtype) {}
+  ~Call() override {
+    for (ASTNode* node : arguments) {
+      DELETE_IF(node);
+    }
+  }
+};
+
 struct Lit : ASTNode {
   FunType type;
   s::string_view value;
