@@ -177,6 +177,236 @@ struct Star : ASTNode {
   ~Star() override = default;
 };
 
+struct Implicit : ASTNode {
+  Implicit(int label = kInvalidLabel) : ASTNode(label) {}
+  ~Implicit() override = default;
+};
+
+struct Goto : ASTNode {
+  ASTNode* var;
+  s::vector<int> labels;
+
+  Goto(ASTNode* var, s::vector<int> labels, int label = kInvalidLabel)
+    : ASTNode(label), var(var), labels(s::move(labels)) {}
+  ~Goto() override {
+    DELETE_IF(var);
+  }
+};
+
+struct Format : ASTNode {
+  s::vector<s::string_view> specification;
+
+  Format(s::vector<s::string_view> specification, int label = kInvalidLabel)
+    : ASTNode(label), specification(s::move(specification)) {}
+  ~Format() override = default;
+};
+
+struct Data : ASTNode {
+  s::vector<s::string_view> variables;
+  s::vector<ASTNode*> values;
+
+  Data(s::vector<s::string_view> variables = {}, s::vector<ASTNode*> values = {}, int label = kInvalidLabel)
+    : ASTNode(label), variables(s::move(variables)), values(s::move(values)) {}
+  ~Data() override {
+    for (ASTNode* node : values) {
+      DELETE_IF(node);
+    }
+  }
+};
+
+struct Common : ASTNode {
+  s::string_view name;
+  s::vector<s::string_view> variables;
+
+  Common(s::string_view name = {}, s::vector<s::string_view> variables = {}, int label = kInvalidLabel)
+    : ASTNode(label), name(name), variables(s::move(variables)) {}
+  ~Common() override = default;
+};
+
+struct External : ASTNode {
+  s::vector<s::string_view> procedures;
+
+  External(s::vector<s::string_view> procedures = {}, int label = kInvalidLabel)
+    : ASTNode(label), procedures(s::move(procedures)) {}
+  ~External() override = default;
+};
+
+struct Dimension : ASTNode {
+  s::string_view variable;
+  s::vector<ASTNode*> dimensions;
+
+  Dimension(s::string_view variable = {}, s::vector<ASTNode*> dimensions = {}, int label = kInvalidLabel)
+    : ASTNode(label), variable(variable), dimensions(s::move(dimensions)) {}
+  ~Dimension() override {
+    for (ASTNode* node : dimensions) {
+      DELETE_IF(node);
+    }
+  }
+};
+
+struct Stop : ASTNode {
+  ASTNode* message;
+
+  Stop(ASTNode* message = nullptr, int label = kInvalidLabel)
+    : ASTNode(label), message(message) {}
+  ~Stop() override {
+    DELETE_IF(message);
+  }
+};
+
+struct Pause : ASTNode {
+  ASTNode* message;
+
+  Pause(ASTNode* message = nullptr, int label = kInvalidLabel)
+    : ASTNode(label), message(message) {}
+  ~Pause() override {
+    DELETE_IF(message);
+  }
+};
+
+struct Entry : ASTNode {
+  s::string_view name;
+  s::vector<s::string_view> parameters;
+
+  Entry(s::string_view name, s::vector<s::string_view> parameters, int label = kInvalidLabel)
+    : ASTNode(label), name(name), parameters(s::move(parameters)) {}
+  ~Entry() override = default;
+};
+
+struct Equivalence : ASTNode {
+  s::vector<s::string_view> group;
+
+  Equivalence(s::vector<s::string_view> group = {}, int label = kInvalidLabel)
+    : ASTNode(label), group(s::move(group)) {}
+  ~Equivalence() override = default;
+};
+
+struct Intrinsic : ASTNode {
+  s::vector<s::string_view> functions;
+
+  Intrinsic(s::vector<s::string_view> functions = {}, int label = kInvalidLabel)
+    : ASTNode(label), functions(s::move(functions)) {}
+  ~Intrinsic() override = default;
+};
+
+struct Param : ASTNode {
+  s::string_view name;
+  ASTNode* value;
+
+  Param(s::string_view name, ASTNode* value, int label = kInvalidLabel)
+    : ASTNode(label), name(name), value(value) {}
+  ~Param() override {
+    DELETE_IF(value);
+  }
+};
+
+struct Save : ASTNode {
+  s::vector<s::string_view> variables;
+
+  Save(s::vector<s::string_view> variables = {}, int label = kInvalidLabel)
+    : ASTNode(label), variables(s::move(variables)) {}
+  ~Save() override = default;
+};
+
+struct Close : ASTNode {
+  ASTNode* unit;
+  ASTNode* status;
+
+  Close(ASTNode* unit = nullptr, ASTNode* status = nullptr, int label = kInvalidLabel)
+    : ASTNode(label), unit(unit), status(status) {}
+  ~Close() override {
+    DELETE_IF(unit);
+    DELETE_IF(status);
+  }
+};
+
+struct Open : ASTNode {
+  ASTNode* unit;
+  ASTNode* file;
+  ASTNode* status;
+  ASTNode* access;
+  ASTNode* form;
+  ASTNode* recl;
+  ASTNode* blank;
+
+  Open(ASTNode* unit = nullptr, ASTNode* file = nullptr, ASTNode* status = nullptr,
+       ASTNode* access = nullptr, ASTNode* form = nullptr, ASTNode* recl = nullptr,
+       ASTNode* blank = nullptr, int label = kInvalidLabel)
+    : ASTNode(label), unit(unit), file(file), status(status),
+      access(access), form(form), recl(recl), blank(blank) {}
+  ~Open() override {
+    DELETE_IF(unit);
+    DELETE_IF(file);
+    DELETE_IF(status);
+    DELETE_IF(access);
+    DELETE_IF(form);
+    DELETE_IF(recl);
+    DELETE_IF(blank);
+  }
+};
+
+struct Read : ASTNode {
+  ASTNode* unit;
+  ASTNode* format;
+  s::vector<ASTNode*> variables;
+
+  Read(ASTNode* unit = nullptr, ASTNode* format = nullptr, s::vector<ASTNode*> variables = {}, int label = kInvalidLabel)
+    : ASTNode(label), unit(unit), format(format), variables(s::move(variables)) {}
+  ~Read() override {
+    DELETE_IF(unit);
+    DELETE_IF(format);
+    for (ASTNode* node : variables) {
+      DELETE_IF(node);
+    }
+  }
+};
+
+struct Write : ASTNode {
+  ASTNode* unit;
+  ASTNode* format;
+  s::vector<ASTNode*> variables;
+
+  Write(ASTNode* unit = nullptr, ASTNode* format = nullptr, s::vector<ASTNode*> variables = {}, int label = kInvalidLabel)
+    : ASTNode(label), unit(unit), format(format), variables(s::move(variables)) {}
+  ~Write() override {
+    DELETE_IF(unit);
+    DELETE_IF(format);
+    for (ASTNode* node : variables) {
+      DELETE_IF(node);
+    }
+  }
+};
+
+struct Print : ASTNode {
+  ASTNode* format;
+  s::vector<ASTNode*> variables;
+
+  Print(ASTNode* format = nullptr, s::vector<ASTNode*> variables = {}, int label = kInvalidLabel)
+    : ASTNode(label), format(format), variables(s::move(variables)) {}
+  ~Print() override {
+    DELETE_IF(format);
+    for (ASTNode* node : variables) {
+      DELETE_IF(node);
+    }
+  }
+};
+
+struct Continue : ASTNode {
+  Continue(int label = kInvalidLabel) : ASTNode(label) {}
+  ~Continue() override = default;
+};
+
+struct Return : ASTNode {
+  ASTNode* expr;
+  FunType rtype;
+
+  Return(ASTNode* expr, int label = kInvalidLabel)
+    : ASTNode(label), expr(expr), rtype(TY::UNKNOWN) {}
+  ~Return() override {
+    DELETE_IF(expr);
+  }
+};
+
 struct Call : ASTNode {
   s::string_view name;
   s::vector<ASTNode*> arguments;

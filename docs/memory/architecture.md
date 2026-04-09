@@ -173,6 +173,128 @@ classDiagram
             +Star(label int)
             +~Star() override
         }
+        class Implicit {
+            +Implicit(label int)
+            +~Implicit() override
+        }
+        class Goto {
+            +ASTNode* var
+            +vector~int~ labels
+            +Goto(var ASTNode*, labels vector~int~, label int)
+            +~Goto() override
+        }
+        class Format {
+            +vector~string_view~ specification
+            +Format(specification vector~string_view~, label int)
+            +~Format() override
+        }
+        class Data {
+            +vector~string_view~ variables
+            +vector~ASTNode*~ values
+            +Data(variables vector~string_view~, values vector~ASTNode*~, label int)
+            +~Data() override
+        }
+        class Common {
+            +string_view name
+            +vector~string_view~ variables
+            +Common(name string_view, variables vector~string_view~, label int)
+            +~Common() override
+        }
+        class External {
+            +vector~string_view~ procedures
+            +External(procedures vector~string_view~, label int)
+            +~External() override
+        }
+        class Dimension {
+            +string_view variable
+            +vector~ASTNode*~ dimensions
+            +Dimension(variable string_view, dimensions vector~ASTNode*~, label int)
+            +~Dimension() override
+        }
+        class Stop {
+            +ASTNode* message
+            +Stop(message ASTNode*, label int)
+            +~Stop() override
+        }
+        class Pause {
+            +ASTNode* message
+            +Pause(message ASTNode*, label int)
+            +~Pause() override
+        }
+        class Entry {
+            +string_view name
+            +vector~string_view~ parameters
+            +Entry(name string_view, parameters vector~string_view~, label int)
+            +~Entry() override
+        }
+        class Equivalence {
+            +vector~string_view~ group
+            +Equivalence(group vector~string_view~, label int)
+            +~Equivalence() override
+        }
+        class Intrinsic {
+            +vector~string_view~ functions
+            +Intrinsic(functions vector~string_view~, label int)
+            +~Intrinsic() override
+        }
+        class Param {
+            +string_view name
+            +ASTNode* value
+            +Param(name string_view, value ASTNode*, label int)
+            +~Param() override
+        }
+        class Save {
+            +vector~string_view~ variables
+            +Save(variables vector~string_view~, label int)
+            +~Save() override
+        }
+        class Close {
+            +ASTNode* unit
+            +ASTNode* status
+            +Close(unit ASTNode*, status ASTNode*, label int)
+            +~Close() override
+        }
+        class Open {
+            +ASTNode* unit
+            +ASTNode* file
+            +ASTNode* status
+            +ASTNode* access
+            +ASTNode* form
+            +ASTNode* recl
+            +ASTNode* blank
+            +Open(unit ASTNode*, file ASTNode*, status ASTNode*, access ASTNode*, form ASTNode*, recl ASTNode*, blank ASTNode*, label int)
+            +~Open() override
+        }
+        class Read {
+            +ASTNode* unit
+            +ASTNode* format
+            +vector~ASTNode*~ variables
+            +Read(unit ASTNode*, format ASTNode*, variables vector~ASTNode*~, label int)
+            +~Read() override
+        }
+        class Write {
+            +ASTNode* unit
+            +ASTNode* format
+            +vector~ASTNode*~ variables
+            +Write(unit ASTNode*, format ASTNode*, variables vector~ASTNode*~, label int)
+            +~Write() override
+        }
+        class Print {
+            +ASTNode* format
+            +vector~ASTNode*~ variables
+            +Print(format ASTNode*, variables vector~ASTNode*~, label int)
+            +~Print() override
+        }
+        class Continue {
+            +Continue(label int)
+            +~Continue() override
+        }
+        class Return {
+            +ASTNode* expr
+            +FunType rtype
+            +Return(expr ASTNode*, label int)
+            +~Return() override
+        }
         class Lit {
             +FunType type
             +string_view value
@@ -254,6 +376,28 @@ classDiagram
     Call --|> ASTNode : extends
     Call --> FunType : rtype
     Star --|> ASTNode : extends
+    Implicit --|> ASTNode : extends
+    Format --|> ASTNode : extends
+    Data --|> ASTNode : extends
+    Common --|> ASTNode : extends
+    External --|> ASTNode : extends
+    Dimension --|> ASTNode : extends
+    Stop --|> ASTNode : extends
+    Pause --|> ASTNode : extends
+    Entry --|> ASTNode : extends
+    Equivalence --|> ASTNode : extends
+    Intrinsic --|> ASTNode : extends
+    Param --|> ASTNode : extends
+    Save --|> ASTNode : extends
+    Close --|> ASTNode : extends
+    Open --|> ASTNode : extends
+    Read --|> ASTNode : extends
+    Write --|> ASTNode : extends
+    Print --|> ASTNode : extends
+    Goto --|> ASTNode : extends
+    Continue --|> ASTNode : extends
+    Return --|> ASTNode : extends
+    Return --> FunType : rtype
     Lit --|> ASTNode : extends
     Lit --> FunType : type
     Indexing --|> ASTNode : extends
