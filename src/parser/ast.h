@@ -439,6 +439,18 @@ struct Lit : ASTNode {
   ~Lit() override = default;
 };
 
+struct IndexList : ASTNode {
+  s::vector<ASTNode*> indexes;
+
+  IndexList(s::vector<ASTNode*>&& indexes, int label = kInvalidLabel)
+    : ASTNode(label), indexes(s::move(indexes)) {}
+  ~IndexList() override {
+    for (ASTNode* node : indexes) {
+      DELETE_IF(node);
+    }
+  }
+};
+
 struct Indexing : ASTNode {
   Var* variable;
   IndexList* indexes;
@@ -461,18 +473,6 @@ struct Decl : ASTNode {
     : ASTNode(label), type(type), name(name), sizes(sizes) {}
   ~Decl() override {
     DELETE_IF(sizes);
-  }
-};
-
-struct IndexList : ASTNode {
-  s::vector<ASTNode*> indexes;
-
-  IndexList(s::vector<ASTNode*>&& indexes, int label = kInvalidLabel)
-    : ASTNode(label), indexes(s::move(indexes)) {}
-  ~IndexList() override {
-    for (ASTNode* node : indexes) {
-      DELETE_IF(node);
-    }
   }
 };
 
