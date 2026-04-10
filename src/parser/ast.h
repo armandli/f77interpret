@@ -273,6 +273,15 @@ struct Entry : ASTNode {
   ~Entry() override = default;
 };
 
+struct Interface : ASTNode {
+  s::string_view name;
+  s::vector<s::string_view> parameters;
+
+  Interface(s::string_view name, s::vector<s::string_view> parameters, int label = kInvalidLabel)
+    : ASTNode(label), name(name), parameters(s::move(parameters)) {}
+  ~Interface() override = default;
+};
+
 struct Equivalence : ASTNode {
   s::vector<s::string_view> group;
 

@@ -227,6 +227,12 @@ classDiagram
             +Entry(name string_view, parameters vector~string_view~, label int)
             +~Entry() override
         }
+        class Interface {
+            +string_view name
+            +vector~string_view~ parameters
+            +Interface(name string_view, parameters vector~string_view~, label int)
+            +~Interface() override
+        }
         class Equivalence {
             +vector~string_view~ group
             +Equivalence(group vector~string_view~, label int)
@@ -385,6 +391,7 @@ classDiagram
     Stop --|> ASTNode : extends
     Pause --|> ASTNode : extends
     Entry --|> ASTNode : extends
+    Interface --|> ASTNode : extends
     Equivalence --|> ASTNode : extends
     Intrinsic --|> ASTNode : extends
     Param --|> ASTNode : extends
