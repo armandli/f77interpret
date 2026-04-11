@@ -1,6 +1,6 @@
 ---
 name: format-cpp
-description: Formats C++ code according to 21 specific style rules covering whitespace, braces, preprocessor directives, namespaces, types, formatting, and semantic transformations. Use when user asks to "format my C++ code", "apply C++ style rules", "clean up this C++ file", or "run format-cpp on X". Run refactor-cpp before this skill. Do NOT use for explaining C++ code, debugging, or writing new C++ code from scratch.
+description: Formats C++ code according to 22 specific style rules covering whitespace, braces, preprocessor directives, namespaces, types, formatting, and semantic transformations. Use when user asks to "format my C++ code", "apply C++ style rules", "clean up this C++ file", or "run format-cpp on X". Run refactor-cpp before this skill. Do NOT use for explaining C++ code, debugging, or writing new C++ code from scratch.
 argument-hint: "[file or directory path]"
 ---
 
@@ -119,6 +119,30 @@ template<class T>      // no
 **E5 — Inline small methods.** Methods with 3 or fewer statements should be defined inline in the struct/class body. Move longer methods out-of-line.
 
 **E6 — Enum underlying type.** Every `enum class`, `enum struct`, and plain `enum` declaration must include an explicit underlying fundamental type. If none is specified, add `: int` as the default. Only use a type other than `int` when the enum values demonstrably require it (e.g., a flags enum needing more than 32 bits uses `: uint64_t`, an enum that must fit in a byte uses `: uint8_t`). If the declaration already has an explicit underlying type, leave it unchanged.
+
+**E7 — No `static const`/`static constexpr` members in class/struct.** Move `static constexpr` and `static const` data members out of `struct`/`class` bodies and into enclosing namespace scope as `static constexpr` variables. At namespace scope, always use `static constexpr`, never `static const`.
+
+```cpp
+// before
+struct Foo {
+  static constexpr int kMax = 100;
+  static const char* kName = "foo";
+};
+
+// after (members lifted to namespace scope, before the struct)
+static constexpr int kMax = 100;
+static constexpr const char* kName = "foo";
+
+struct Foo {};
+```
+
+Update all references that used the qualified form `Foo::kMax` to the unqualified name (or namespace-qualified name if the call site is outside the enclosing namespace).
+
+**Exceptions — do NOT move when:**
+- The member's type depends on a template parameter of the enclosing class (e.g., `static constexpr T kZero = T{}`).
+- The member is part of a traits class or policy struct intentionally designed for qualified access (`Traits::value`, `std::numeric_limits<T>::max()`).
+- The member is `inline static` with a non-trivial initializer that requires the class to be complete.
+- Moving would create a name collision in the enclosing namespace.
 
 ### Group F: Formatting
 

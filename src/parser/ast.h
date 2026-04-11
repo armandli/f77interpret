@@ -37,9 +37,9 @@ struct FunType {
     : type(type), size(size), varlen(false) {}
 };
 
-struct ASTNode {
-  static constexpr int kInvalidLabel = -1;
+static constexpr int kInvalidLabel = -1;
 
+struct ASTNode {
   ASTNode() : label(kInvalidLabel) {}
   explicit ASTNode(int label) : label(label) {}
   virtual ~ASTNode() = default;

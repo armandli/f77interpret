@@ -153,7 +153,7 @@ s::ostream& ASTPrinter::print_cmpstmt(s::ostream& out, const CmpStmt& stmt, int 
 
 s::ostream& ASTPrinter::print_prog(s::ostream& out, const Prog& node, int depth) const {
   indent(out, depth) << "Prog { name=\"" << node.name << "\"";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   print_cmpstmt(out, node.body, depth + 1);
@@ -170,7 +170,7 @@ s::ostream& ASTPrinter::print_sub(s::ostream& out, const Sub& node, int depth) c
     }
     out << "]";
   }
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   print_cmpstmt(out, node.body, depth + 1);
@@ -188,7 +188,7 @@ s::ostream& ASTPrinter::print_function(s::ostream& out, const Function& node, in
     out << "]";
   }
   out << ", return_type=" << ty_name(node.return_type.type);
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   print_cmpstmt(out, node.body, depth + 1);
@@ -197,7 +197,7 @@ s::ostream& ASTPrinter::print_function(s::ostream& out, const Function& node, in
 
 s::ostream& ASTPrinter::print_if(s::ostream& out, const If& node, int depth) const {
   indent(out, depth) << "If";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   indent(out, depth + 1) << "condition:\n";
@@ -213,7 +213,7 @@ s::ostream& ASTPrinter::print_if(s::ostream& out, const If& node, int depth) con
 
 s::ostream& ASTPrinter::print_do(s::ostream& out, const Do& node, int depth) const {
   indent(out, depth) << "Do";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   indent(out, depth + 1) << "init:\n";
@@ -231,7 +231,7 @@ s::ostream& ASTPrinter::print_do(s::ostream& out, const Do& node, int depth) con
 
 s::ostream& ASTPrinter::print_assign(s::ostream& out, const Assign& node, int depth) const {
   indent(out, depth) << "Assign";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   indent(out, depth + 1) << "variable:\n";
@@ -244,7 +244,7 @@ s::ostream& ASTPrinter::print_assign(s::ostream& out, const Assign& node, int de
 s::ostream& ASTPrinter::print_binaryop(s::ostream& out, const BinaryOp& node, int depth) const {
   indent(out, depth) << "BinaryOp { op=" << bop_name(node.op)
                      << ", rtype=" << ty_name(node.rtype.type);
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   indent(out, depth + 1) << "left:\n";
@@ -257,7 +257,7 @@ s::ostream& ASTPrinter::print_binaryop(s::ostream& out, const BinaryOp& node, in
 s::ostream& ASTPrinter::print_unaryop(s::ostream& out, const UnaryOp& node, int depth) const {
   indent(out, depth) << "UnaryOp { op=" << uop_name(node.op)
                      << ", rtype=" << ty_name(node.rtype.type);
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   indent(out, depth + 1) << "expr:\n";
@@ -268,7 +268,7 @@ s::ostream& ASTPrinter::print_unaryop(s::ostream& out, const UnaryOp& node, int 
 s::ostream& ASTPrinter::print_var(s::ostream& out, const Var& node, int depth) const {
   indent(out, depth) << "Var { name=\"" << node.name
                      << "\", type=" << ty_name(node.rtype.type);
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   return out;
@@ -276,7 +276,7 @@ s::ostream& ASTPrinter::print_var(s::ostream& out, const Var& node, int depth) c
 
 s::ostream& ASTPrinter::print_star(s::ostream& out, const Star& node, int depth) const {
   indent(out, depth) << "Star";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   return out;
@@ -284,7 +284,7 @@ s::ostream& ASTPrinter::print_star(s::ostream& out, const Star& node, int depth)
 
 s::ostream& ASTPrinter::print_implicit(s::ostream& out, const Implicit& node, int depth) const {
   indent(out, depth) << "Implicit";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   return out;
@@ -297,7 +297,7 @@ s::ostream& ASTPrinter::print_goto(s::ostream& out, const Goto& node, int depth)
     out << node.labels[i];
   }
   out << "]";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   if (node.var != nullptr) {
@@ -314,7 +314,7 @@ s::ostream& ASTPrinter::print_format(s::ostream& out, const Format& node, int de
     out << "\"" << node.specification[i] << "\"";
   }
   out << "]";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   return out;
@@ -327,7 +327,7 @@ s::ostream& ASTPrinter::print_data(s::ostream& out, const Data& node, int depth)
     out << node.variables[i];
   }
   out << "]";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   if (!node.values.empty()) {
@@ -345,7 +345,7 @@ s::ostream& ASTPrinter::print_common(s::ostream& out, const Common& node, int de
     out << node.variables[i];
   }
   out << "]";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   return out;
@@ -358,7 +358,7 @@ s::ostream& ASTPrinter::print_external(s::ostream& out, const External& node, in
     out << node.procedures[i];
   }
   out << "]";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   return out;
@@ -366,7 +366,7 @@ s::ostream& ASTPrinter::print_external(s::ostream& out, const External& node, in
 
 s::ostream& ASTPrinter::print_dimension(s::ostream& out, const Dimension& node, int depth) const {
   indent(out, depth) << "Dimension { variable=\"" << node.variable << "\"";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   if (!node.dimensions.empty()) {
@@ -379,7 +379,7 @@ s::ostream& ASTPrinter::print_dimension(s::ostream& out, const Dimension& node, 
 
 s::ostream& ASTPrinter::print_stop(s::ostream& out, const Stop& node, int depth) const {
   indent(out, depth) << "Stop";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   if (node.message != nullptr) {
@@ -391,7 +391,7 @@ s::ostream& ASTPrinter::print_stop(s::ostream& out, const Stop& node, int depth)
 
 s::ostream& ASTPrinter::print_pause(s::ostream& out, const Pause& node, int depth) const {
   indent(out, depth) << "Pause";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   if (node.message != nullptr) {
@@ -411,7 +411,7 @@ s::ostream& ASTPrinter::print_entry(s::ostream& out, const Entry& node, int dept
     }
     out << "]";
   }
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   return out;
@@ -424,7 +424,7 @@ s::ostream& ASTPrinter::print_equivalence(s::ostream& out, const Equivalence& no
     out << node.group[i];
   }
   out << "]";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   return out;
@@ -437,7 +437,7 @@ s::ostream& ASTPrinter::print_intrinsic(s::ostream& out, const Intrinsic& node, 
     out << node.functions[i];
   }
   out << "]";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   return out;
@@ -445,7 +445,7 @@ s::ostream& ASTPrinter::print_intrinsic(s::ostream& out, const Intrinsic& node, 
 
 s::ostream& ASTPrinter::print_param(s::ostream& out, const Param& node, int depth) const {
   indent(out, depth) << "Param { name=\"" << node.name << "\"";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   indent(out, depth + 1) << "value:\n";
@@ -460,7 +460,7 @@ s::ostream& ASTPrinter::print_save(s::ostream& out, const Save& node, int depth)
     out << node.variables[i];
   }
   out << "]";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   return out;
@@ -468,7 +468,7 @@ s::ostream& ASTPrinter::print_save(s::ostream& out, const Save& node, int depth)
 
 s::ostream& ASTPrinter::print_close(s::ostream& out, const Close& node, int depth) const {
   indent(out, depth) << "Close";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   if (node.unit != nullptr) {
@@ -484,7 +484,7 @@ s::ostream& ASTPrinter::print_close(s::ostream& out, const Close& node, int dept
 
 s::ostream& ASTPrinter::print_open(s::ostream& out, const Open& node, int depth) const {
   indent(out, depth) << "Open";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   if (node.unit != nullptr) {
@@ -520,7 +520,7 @@ s::ostream& ASTPrinter::print_open(s::ostream& out, const Open& node, int depth)
 
 s::ostream& ASTPrinter::print_read(s::ostream& out, const Read& node, int depth) const {
   indent(out, depth) << "Read";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   if (node.unit != nullptr) {
@@ -541,7 +541,7 @@ s::ostream& ASTPrinter::print_read(s::ostream& out, const Read& node, int depth)
 
 s::ostream& ASTPrinter::print_write(s::ostream& out, const Write& node, int depth) const {
   indent(out, depth) << "Write";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   if (node.unit != nullptr) {
@@ -562,7 +562,7 @@ s::ostream& ASTPrinter::print_write(s::ostream& out, const Write& node, int dept
 
 s::ostream& ASTPrinter::print_print(s::ostream& out, const Print& node, int depth) const {
   indent(out, depth) << "Print";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   if (node.format != nullptr) {
@@ -579,7 +579,7 @@ s::ostream& ASTPrinter::print_print(s::ostream& out, const Print& node, int dept
 
 s::ostream& ASTPrinter::print_continue(s::ostream& out, const Continue& node, int depth) const {
   indent(out, depth) << "Continue";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   return out;
@@ -587,7 +587,7 @@ s::ostream& ASTPrinter::print_continue(s::ostream& out, const Continue& node, in
 
 s::ostream& ASTPrinter::print_return(s::ostream& out, const Return& node, int depth) const {
   indent(out, depth) << "Return";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   if (node.expr != nullptr) {
@@ -600,7 +600,7 @@ s::ostream& ASTPrinter::print_return(s::ostream& out, const Return& node, int de
 s::ostream& ASTPrinter::print_call(s::ostream& out, const Call& node, int depth) const {
   indent(out, depth) << "Call { name=\"" << node.name
                      << "\", rtype=" << ty_name(node.rtype.type);
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   if (!node.arguments.empty()) {
@@ -614,7 +614,7 @@ s::ostream& ASTPrinter::print_call(s::ostream& out, const Call& node, int depth)
 s::ostream& ASTPrinter::print_lit(s::ostream& out, const Lit& node, int depth) const {
   indent(out, depth) << "Lit { type=" << ty_name(node.type.type)
                      << ", value=\"" << node.value << "\"";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   return out;
@@ -622,7 +622,7 @@ s::ostream& ASTPrinter::print_lit(s::ostream& out, const Lit& node, int depth) c
 
 s::ostream& ASTPrinter::print_indexing(s::ostream& out, const Indexing& node, int depth) const {
   indent(out, depth) << "Indexing { rtype=" << ty_name(node.rtype.type);
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   indent(out, depth + 1) << "variable:\n";
@@ -637,7 +637,7 @@ s::ostream& ASTPrinter::print_indexing(s::ostream& out, const Indexing& node, in
 s::ostream& ASTPrinter::print_decl(s::ostream& out, const Decl& node, int depth) const {
   indent(out, depth) << "Decl { type=" << ty_name(node.type.type)
                      << ", name=\"" << node.name << "\"";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << ", label=" << node.label;
   out << " }\n";
   if (node.sizes != nullptr) {
@@ -649,7 +649,7 @@ s::ostream& ASTPrinter::print_decl(s::ostream& out, const Decl& node, int depth)
 
 s::ostream& ASTPrinter::print_indexlist(s::ostream& out, const IndexList& node, int depth) const {
   indent(out, depth) << "IndexList";
-  if (node.label != ASTNode::kInvalidLabel)
+  if (node.label != kInvalidLabel)
     out << " { label=" << node.label << " }";
   out << "\n";
   for (const ASTNode* idx : node.indexes)
