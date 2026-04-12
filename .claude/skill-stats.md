@@ -6,7 +6,7 @@
 | commit-push | 13 | 0 |
 | cpp-cookiecutter | 1 | 0 |
 | format-cpp | 3 | 0 |
-| pull | 8 | 0 |
+| pull | 9 | 0 |
 | refactor-cpp | 3 | 0 |
 | update-readme | 1 | 0 |
 
