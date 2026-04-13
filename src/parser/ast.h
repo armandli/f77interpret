@@ -478,4 +478,6 @@ struct Decl : ASTNode {
 
 } // namespace f77i
 
+#undef DELETE_IF
+
 #endif // F77INTERPRET_PARSER_AST_H
