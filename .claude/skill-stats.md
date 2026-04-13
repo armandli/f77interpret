@@ -3,7 +3,7 @@
 | Skill Name | Uses | Issues |
 |---|---|---|
 | agent-memory-v2 | 5 | 0 |
-| commit-push | 14 | 0 |
+| commit-push | 15 | 0 |
 | cpp-cookiecutter | 1 | 0 |
 | format-cpp | 3 | 0 |
 | pull | 9 | 0 |

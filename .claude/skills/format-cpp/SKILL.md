@@ -1,6 +1,6 @@
 ---
 name: format-cpp
-description: Formats C++ code according to 22 specific style rules covering whitespace, braces, preprocessor directives, namespaces, types, formatting, and semantic transformations. Use when user asks to "format my C++ code", "apply C++ style rules", "clean up this C++ file", or "run format-cpp on X". Run refactor-cpp before this skill. Do NOT use for explaining C++ code, debugging, or writing new C++ code from scratch.
+description: Formats C++ code according to 23 specific style rules covering whitespace, braces, preprocessor directives, namespaces, types, formatting, and semantic transformations. Use when user asks to "format my C++ code", "apply C++ style rules", "clean up this C++ file", or "run format-cpp on X". Run refactor-cpp before this skill. Do NOT use for explaining C++ code, debugging, or writing new C++ code from scratch.
 argument-hint: "[file or directory path]"
 ---
 
@@ -84,6 +84,21 @@ void very_long_function(
 ### Group C: Preprocessor
 
 **C1 — Header guards, not `#pragma once`.** Use `#ifndef`/`#define`/`#endif` guards. The guard name is the filename in `UPPER_SNAKE_CASE` with `_H` suffix. Replace any existing `#pragma once`.
+
+**C3 — `#undef` macros after last use.** Every `#define` macro (other than header guards) must be `#undef`-ed immediately after its last use in the file, in both `.h`/`.hpp` and `.cpp`/`.cc` files. This prevents the macro from leaking into other translation units or later includes. Place the `#undef` on the line immediately following the last statement or block that uses the macro. If the macro is used throughout the entire file (e.g., a utility macro used in many struct destructors), place the `#undef` just before the `#endif` in headers, or at the end of the file in source files.
+
+```cpp
+// before (header)
+#define DELETE_IF(ptr) do { if ((ptr) != nullptr) delete (ptr); } while (false)
+// ... usages scattered through file ...
+#endif // MYFILE_H
+
+// after (header)
+#define DELETE_IF(ptr) do { if ((ptr) != nullptr) delete (ptr); } while (false)
+// ... usages scattered through file ...
+#undef DELETE_IF   // added before #endif
+#endif // MYFILE_H
+```
 
 **C2 — Tidy includes.** Sort `#include` directives in this order, separated by blank lines:
 1. Corresponding header (for `.cpp` files)
